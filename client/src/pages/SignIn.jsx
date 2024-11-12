@@ -46,21 +46,68 @@ export default function SignIn() {
   };
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">Sign In</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input type="email" placeholder="email" className="border p-3 rounded-lg" id="email" onChange={handleChange}/>
-        <input type="password" placeholder="password" className="border p-3 rounded-lg" id="password" onChange={handleChange}/>  
-        <button disabled = {loading} className="bg-slate-700 text-white p-3 rounded-lg uppercase hover : opacity-95  disabled:opacity-80">{loading ? 'Loading...' : 'Sign In'}</button>   
-        <OAuth /> 
-      </form>
-      <div className="flex gap-2 mt-5">
-        <p>Dont have an account?</p>
-        <Link to = {"/sign-up"}>
-          <span className='text-blue-700'>Sign up</span>
-        </Link>
-      </div>
-      {error && <p className="text-red-500 text-center mt-3">{error}</p>}
+    <div className="min-h-[95vh] bg-gray-900 text-gray-100 flex justify-center py-6">
+    <div className="max-w-screen-lg m-0 sm:m-8 bg-gray-800 shadow-2xl shadow-blue-500/20 sm:rounded-lg flex justify-center flex-1">
+    <div className="lg:w-1/2 xl:w-5/12 p-3 sm:p-6">
+    <div>
+    <h1 className="font-bold text-2xl flex flex-wrap justify-center">
+    <span className="text-blue-400">DJK&apos;s </span>
+    <span className="text-orange-400">AutoHUB</span>
+    </h1>
+    </div>
+    <div className="mt-6 flex flex-col items-center">
+    <h1 className="text-2xl xl:text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+    Sign In
+    </h1>
+    <div className="w-full flex-1 mt-5">
+    <div className="flex flex-col items-center">
+    <OAuth />
+    </div>
+    <div className="my-6 border-b border-gray-700 text-center">
+    <div className="leading-none px-3 inline-block text-sm text-gray-400 tracking-wide font-medium bg-gray-800 transform translate-y-1/2">
+    Or sign in with e-mail
+    </div>
+    </div>
+    <form onSubmit={handleSubmit} className="mx-auto max-w-sm">
+    <input
+    type="email"
+    placeholder="Email"
+    id="email"
+    onChange={handleChange}
+    className="w-full px-7 py-4 rounded-lg font-medium bg-gray-700 border border-gray-600 placeholder-gray-400 text-base focus:outline-none focus:border-blue-400 focus:bg-gray-800 focus:ring-2 focus:ring-blue-400/20"
+    />
+    <input
+    type="password"
+    placeholder="Password"
+    id="password"
+    onChange={handleChange}
+    className="w-full px-7 py-4 rounded-lg font-medium bg-gray-700 border border-gray-600 placeholder-gray-400 text-base focus:outline-none focus:border-blue-400 focus:bg-gray-800 mt-5 focus:ring-2 focus:ring-blue-400/20"
+    />
+    <button
+    disabled={loading}
+    className="mt-5 tracking-wide font-semibold bg-gradient-to-r from-blue-500 to-purple-600 text-gray-100 w-full py-4 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:ring-2 focus:ring-blue-400 focus:outline-none disabled:opacity-80"
+    >
+    {loading ? 'Loading...' : 'Sign In'}
+    </button>
+    </form>
+    <div className="mt-5 text-base text-gray-400 text-center mb-4">
+    <p>Don&apos;t have an account?
+    <Link to="/sign-up">
+    <span className="border-b border-gray-500 border-dotted ml-2 text-blue-400 hover:text-blue-300">Sign up</span>
+    </Link>
+    </p>
+    {error && <p className="text-red-400 mt-4">{error}</p>}
+    </div>
+    </div>
+    </div>
+    </div>
+    <div className="flex-1 bg-gray-800 text-center hidden lg:flex">
+    <div className="m-6 xl:m-10 w-full bg-contain bg-center bg-no-repeat opacity-75" 
+    style={{backgroundImage: "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')"}}
+    >
+    </div>
+    </div>
+    </div>
     </div>
   )
 }
