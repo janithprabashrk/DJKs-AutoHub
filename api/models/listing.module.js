@@ -1,9 +1,10 @@
 import mongoose, { Model } from 'mongoose';
 
 const listingSchema = new mongoose.Schema({
-    name : {
+    vehicleNumber : {
         type : String,
         required : true,
+        unique : true,
     },
     description : {
         type : String,
@@ -67,7 +68,7 @@ const listingSchema = new mongoose.Schema({
         type : Array,
         required : true,
     },
-    UserRef : {
+    userRef : {
         type : String,
         required : true,
     },
