@@ -1,17 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { app } from "../firebase";
+import { useSelector } from 'react-redux'
+import {useNavigate} from 'react-router-dom';
 
 export default function CreateListing() {
+  const currentUser = useSelector(state=>state.user.currentUser);
+  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
-    imageUrls: []
+    imageUrls: [],
+    vehicleNumber: '',
+    description: '',
+    location: '',
+    regularPrice: 0,
+    discountPrice: 0,
+    modelName: '',
+    YOM: 0,
+    modified: false,
+    Type: '',
+    Make: '',
+    Mileage: 0,
+    color: '#000000',
+    fuelType: '',
+    condition: 'used',
+    Transmission: 'manual',
+    userRef: currentUser._id
   });
   const [ImageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [negativeValueError, setNegativeValueError] = useState('');
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState(10);
   console.log(formData);
   
+  useEffect(() => {
+    let timer;
+    if (success) {
+      timer = setInterval(() => {
+        setRedirectCountdown(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [success]);
+
   const handleImageSubmit = (e) => {
     if(files.length > 0 && files.length + formData.imageUrls.length <= 6) {
         setUploading(true);
@@ -62,45 +103,167 @@ export default function CreateListing() {
     setFormData({...formData, imageUrls: formData.imageUrls.filter((_, i) => i !== index)});
   }
 
+  const handleChange = (e) => {
+    if (e.target.id === 'modified') {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.checked
+      });
+    } else if (e.target.id === 'color') {
+      setFormData({
+        ...formData,
+        color: e.target.value
+      });
+    } else if (e.target.type === 'number') {
+      const value = Number(e.target.value);
+      if (value < 0) {
+        setNegativeValueError('Negative values are not allowed');
+        return;
+      }
+      setNegativeValueError('');
+      setFormData({
+        ...formData,
+        [e.target.id]: value
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.id]: e.target.value
+      });
+    }
+  }
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    // Check for negative values before submitting
+    const numericFields = ['regularPrice', 'discountPrice', 'YOM', 'Mileage'];
+    for (const field of numericFields) {
+      if (formData[field] < 0) {
+        setNegativeValueError('Please correct negative values before submitting');
+        return;
+      }
+    }
+    try {
+      setLoading(true);
+      setError(false);
+      setSuccess(false);
+      const res = await fetch('/api/listing/create/',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          userRef: currentUser._id,
+          }),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if(data.success === false ){
+        setError(data.message);
+      } else {
+        setSuccess(true);
+        setRedirectCountdown(10);
+        // Reset form after successful submission
+        setFormData({
+          imageUrls: [],
+          vehicleNumber: '',
+          description: '',
+          location: '',
+          regularPrice: 0,
+          discountPrice: 0,
+          modelName: '',
+          YOM: 0,
+          modified: false,
+          Type: '',
+          Make: '',
+          Mileage: 0,
+          color: '#000000',
+          fuelType: '',
+          condition: 'used',
+          Transmission: 'manual',
+          userRef: currentUser._id
+        });
+        // Wait 10 seconds before navigating
+        setTimeout(() => {
+          navigate(`/listing/${data._id}`);
+        }, 10000);
+      }
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20">
       <h1 className="text-4xl text-center font-bold mb-16 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Create a Listing</h1>
       <div className="max-w-4xl mx-auto px-4 flex items-center min-h-[calc(100vh-20rem)]">
-        <form className="grid grid-cols-2 gap-6 backdrop-blur-lg bg-white/10 p-8 rounded-2xl shadow-2xl w-full">
-          <input type="text" placeholder="Name" id="name" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" maxLength="62" minLength="10" required />
-          <input type="text" placeholder="Description" id="description" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" maxLength="62" minLength="10" required />
-          <input type="text" placeholder="Location" id="location" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required />
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 backdrop-blur-lg bg-white/10 p-8 rounded-2xl shadow-2xl w-full">
+          {negativeValueError && (
+            <div className="col-span-2 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2 text-red-400 text-center">
+              {negativeValueError}
+            </div>
+          )}
+          <input type="text" placeholder="Vehicle Number" id="vehicleNumber" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange} value={formData.vehicleNumber}/>
+          <input type="text" placeholder="Description" id="description" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" maxLength="62" minLength="10" required onChange={handleChange} value={formData.description}/>
+          <input type="text" placeholder="Location" id="location" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange} value={formData.location} />
           <div className="relative w-full">
             <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">LKR :</span>
-            <input type="number" placeholder="Regular Price" id="regularPrice" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" required />
+            <input type="number" min="0" placeholder="Regular Price" id="regularPrice" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" required onChange={handleChange} />
+            {formData.regularPrice < 0 && (
+              <p className="absolute text-red-400 text-sm mt-1">Negative values are not allowed</p>
+            )}
           </div>
           <div className="relative w-full">
             <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">LKR :</span>
-            <input type="number" placeholder="Discount Price" id="discountPrice" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+            <input type="number" min="0" placeholder="Discount Price" id="discountPrice" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" onChange={handleChange} />
+            {formData.discountPrice < 0 && (
+              <p className="absolute text-red-400 text-sm mt-1">Negative values are not allowed</p>
+            )}
           </div>
-          <input type="text" placeholder="Model Name" id="modelName" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required />
-          <input type="number" placeholder="Year of Manufacture" id="YOM" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" required />
+          <input type="text" placeholder="Model Name" id="modelName" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange} />
+          <div className="relative w-full">
+            <input type="number" min="0" placeholder="Year of Manufacture" id="YOM" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" required onChange={handleChange} />
+            {formData.YOM < 0 && (
+              <p className="absolute text-red-400 text-sm mt-1">Negative values are not allowed</p>
+            )}
+          </div>
           <div className="flex gap-3 items-center px-2">
             <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" id="modified" className="sr-only peer" />
+              <input type="checkbox" id="modified" className="sr-only peer" onChange={handleChange} />
               <div className="w-11 h-6 bg-gray-700/50 border-2 border-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-300 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-cyan-500 peer-checked:to-blue-500 peer-checked:border-cyan-400 peer-hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] after:shadow-md peer-checked:after:shadow-cyan-200/50"></div>
               <span className="ml-3 text-gray-200 select-none">Modified</span>
             </label>
           </div>
-          <input type="text" placeholder="Type" id="Type" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required />
-          <input type="text" placeholder="Make" id="Make" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required />
-          <input type="number" placeholder="Mileage" id="Mileage" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" required />
+          <input type="text" placeholder="Type" id="Type" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange} />
+          <input type="text" placeholder="Make" id="Make" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange} />
           <div className="relative w-full">
-            <input type="color" id="color" className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 p-1 bg-gray-800/50 border border-gray-700 rounded-lg cursor-pointer focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={(e) => {
-              const colorInput = document.getElementById('colorText');
-              if (colorInput) {
-                colorInput.value = e.target.value.toUpperCase();
-              }
-            }} />
-            <input type="text" id="colorText" defaultValue="#000000" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-16 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" readOnly />
+            <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">km :</span>
+            <input type="number" min="0" placeholder="Mileage" id="Mileage" className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" required onChange={handleChange} />
+            {formData.Mileage < 0 && (
+              <p className="absolute text-red-400 text-sm mt-1">Negative values are not allowed</p>
+            )}
           </div>
           <div className="relative w-full">
-            <select id="fuelType" className="w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required>
+            <input 
+              type="color" 
+              id="color" 
+              value={formData.color} 
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 p-1 bg-gray-800/50 border border-gray-700 rounded-lg cursor-pointer focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" 
+              required 
+              onChange={handleChange}
+            />
+            <input 
+              type="text" 
+              id="colorText" 
+              value={formData.color.toUpperCase()} 
+              className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-16 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" 
+              readOnly 
+            />
+          </div>
+          <div className="relative w-full">
+            <select id="fuelType" className="w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange}>
               <option value="" className="bg-gray-800">Select Fuel Type</option>
               <option value="petrol" className="bg-gray-800">Petrol</option>
               <option value="diesel" className="bg-gray-800">Diesel</option>
@@ -114,7 +277,7 @@ export default function CreateListing() {
             </div>
           </div>
           <div className="relative w-full">
-            <select id="condition" className="w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required>
+            <select id="condition" className="w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange}>
               <option value="" className="bg-gray-800">Select Condition</option>
               <option value="new" className="bg-gray-800">New</option>
               <option value="used" className="bg-gray-800">Used</option>
@@ -126,7 +289,7 @@ export default function CreateListing() {
             </div>
           </div>
           <div className="relative w-full">
-            <select id="Transmission" className="w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none focus:bg-gray-700/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required>
+            <select id="Transmission" className="w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange}>
               <option value="" className="bg-gray-800">Select Transmission</option>
               <option value="auto" className="bg-gray-800">Auto</option>
               <option value="manual" className="bg-gray-800">Manual</option>
@@ -198,8 +361,26 @@ export default function CreateListing() {
               ))}
             </div>
           </div>
-          <button type="submit" className="col-span-2 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white font-semibold text-lg rounded-xl hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700">Submit</button>
-          
+          <button disabled={loading || uploading} type="submit" className="col-span-2 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white font-semibold text-lg rounded-xl hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700">
+            {loading ? (
+              <>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"/>
+                </div>
+                <span className="opacity-0">Creating...</span>
+              </>
+            ) : 'Create listing'}
+          </button>
+          {success && (
+            <div className="col-span-2 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-2 text-green-400 text-center animate-fade-in">
+              Listing created successfully! Redirecting in {redirectCountdown} seconds...
+            </div>
+          )}
+          {error && (
+            <div className="col-span-2 bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-2 text-red-400 text-center animate-fade-in">
+              {error}
+            </div>
+          )}
         </form>
       </div>
     </main>
