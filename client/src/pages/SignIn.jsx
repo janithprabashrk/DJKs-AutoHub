@@ -46,8 +46,8 @@ export default function SignIn() {
   };
 
   return (
-    <div className="min-h-[95vh] bg-gray-900 text-gray-100 flex justify-center py-6">
-    <div className="max-w-screen-lg m-0 sm:m-8 bg-gray-800 shadow-2xl shadow-blue-500/20 sm:rounded-lg flex justify-center flex-1">
+    <div className="min-h-[95vh] bg-fixed bg-cover bg-center py-6 flex items-center justify-center" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1883&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
+    <div className="max-w-screen-lg mx-auto bg-gray-800/50 backdrop-blur-sm shadow-2xl shadow-blue-500/20 sm:rounded-lg flex justify-center flex-1">
     <div className="lg:w-1/2 xl:w-5/12 p-3 sm:p-6">
     <div>
     <h1 className="font-bold text-2xl flex flex-wrap justify-center">
@@ -101,7 +101,7 @@ export default function SignIn() {
     </div>
     </div>
     </div>
-    <div className="flex-1 bg-gray-800 text-center hidden lg:flex">
+    <div className="flex-1 bg-gray-800/50 backdrop-blur-sm text-center hidden lg:flex">
     <div className="m-6 xl:m-10 w-full bg-contain bg-center bg-no-repeat opacity-75" 
     style={{backgroundImage: "url('https://storage.googleapis.com/devitary-image-host.appspot.com/15848031292911696601-undraw_designer_life_w96d.svg')"}}
     >
