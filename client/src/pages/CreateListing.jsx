@@ -25,7 +25,8 @@ export default function CreateListing() {
     fuelType: '',
     condition: 'used',
     Transmission: 'manual',
-    userRef: currentUser._id
+    userRef: currentUser._id,
+    contactNumber: '',
   });
   const [ImageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -182,7 +183,8 @@ export default function CreateListing() {
           fuelType: '',
           condition: 'used',
           Transmission: 'manual',
-          userRef: currentUser._id
+          userRef: currentUser._id,
+          contactNumber: '',
         });
         // Wait 10 seconds before navigating
         setTimeout(() => {
@@ -196,8 +198,20 @@ export default function CreateListing() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 py-20">
-      <h1 className="text-4xl text-center font-bold mb-16 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Create a Listing</h1>
+    <main className="min-h-screen bg-fixed bg-cover bg-center py-20" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1883&auto=format&fit=crop'), url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
+      <div className="max-w-4xl mx-auto px-4 flex items-center justify-between mb-16">
+        <button 
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+          </svg>
+          Back
+        </button>
+        <h1 className="text-4xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Create a Listing</h1>
+        <div className="w-[72px]"></div>
+      </div>
       <div className="max-w-4xl mx-auto px-4 flex items-center min-h-[calc(100vh-20rem)]">
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6 backdrop-blur-lg bg-white/10 p-8 rounded-2xl shadow-2xl w-full">
           {negativeValueError && (
@@ -287,6 +301,21 @@ export default function CreateListing() {
                 <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
               </svg>
             </div>
+          </div>
+          <div className="relative w-full">
+            <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">+94</span>
+            <input
+              type="number"
+              id="contactNumber"
+              placeholder="Contact number(XXX XXX XXX)" 
+              className="w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              required
+              onChange={handleChange}
+              value={formData.contactNumber}
+              min="0"
+              max="999999999"
+              title="Please enter a valid Sri Lankan mobile number (e.g., 7XXXXXXXX)"
+            />
           </div>
           <div className="relative w-full">
             <select id="Transmission" className="w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]" required onChange={handleChange}>
