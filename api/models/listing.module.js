@@ -59,6 +59,10 @@ const listingSchema = new mongoose.Schema({
         required : true,
         enum: ['new', 'used']
     },
+    contactNumber : {
+        type : Number,
+        required : true,
+    },
     Transmission : {
         type : String,
         required : true,
@@ -76,5 +80,4 @@ const listingSchema = new mongoose.Schema({
 }, {timestamps : true});
 
 const Listing = mongoose.model('Listing', listingSchema);
-
 export default Listing;
