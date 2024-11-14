@@ -8,6 +8,7 @@ export default function ShowListings() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentSlides, setCurrentSlides] = useState({});
+  const [sortBy, setSortBy] = useState('newest'); // Add sort state
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,10 +69,27 @@ export default function ShowListings() {
     }));
   };
 
+  // Add sorting function
+  const getSortedListings = () => {
+    const sortedListings = [...listings];
+    switch (sortBy) {
+      case 'price-asc':
+        return sortedListings.sort((a, b) => a.regularPrice - b.regularPrice);
+      case 'price-desc':
+        return sortedListings.sort((a, b) => b.regularPrice - a.regularPrice);
+      case 'newest':
+        return sortedListings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      case 'oldest':
+        return sortedListings.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      default:
+        return sortedListings;
+    }
+  };
+
   return (
     <div className="min-h-screen py-20 bg-fixed bg-cover bg-center" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)),url('https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=2037&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
       <div className="max-w-6xl mx-auto px-4">
-        <div className="max-w-4xl mx-auto px-4 flex items-center justify-between mb-16">
+        <div className="max-w-4xl mx-auto px-4 flex items-center justify-between mb-8">
           <button 
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-gray-300 hover:text-cyan-400 transition-colors duration-300"
@@ -84,7 +102,16 @@ export default function ShowListings() {
           <h1 className="text-4xl text-center font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
             Your Listings
           </h1>
-          <div className="w-[72px]"></div>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-gray-800/50 text-gray-200 px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 hover:border-cyan-500 transition-colors duration-300"
+          >
+            <option value="newest" className="bg-gray-800">Newest First</option>
+            <option value="oldest" className="bg-gray-800">Oldest First</option>
+            <option value="price-asc" className="bg-gray-800">Price: Low to High</option>
+            <option value="price-desc" className="bg-gray-800">Price: High to Low</option>
+          </select>
         </div>
 
         {loading && (
@@ -112,7 +139,7 @@ export default function ShowListings() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {listings.map((listing) => (
+          {getSortedListings().map((listing) => (
             <div 
               key={listing._id} 
               className="bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700 hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300"
