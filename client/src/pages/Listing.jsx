@@ -11,6 +11,7 @@ export default function Listing() {
   const [error, setError] = useState(false);
   const [contact, setContact] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
   const params = useParams();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -187,7 +188,11 @@ export default function Listing() {
           <h1 className='text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500'>
             {listing.modelName} - {listing.YOM}
           </h1>
-          <p className='text-gray-300 text-lg leading-relaxed'>{listing.description}</p>
+          <div>
+            <p className='text-gray-300 text-lg leading-relaxed'>
+              {listing.description}
+            </p>
+          </div>
           
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300 mt-4'>
             <div className='space-y-3'>
