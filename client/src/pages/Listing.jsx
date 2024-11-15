@@ -190,8 +190,14 @@ export default function Listing() {
           </h1>
           <div>
             <p className='text-gray-300 text-lg leading-relaxed'>
-              {listing.description}
+              {showFullDescription ? listing.description : `${listing.description.slice(0, 200)}...`}
             </p>
+            <button 
+              onClick={() => setShowFullDescription(!showFullDescription)}
+              className='text-cyan-400 hover:text-cyan-300 mt-2 font-semibold transition-colors'
+            >
+              {showFullDescription ? 'Show Less' : 'See More'}
+            </button>
           </div>
           
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-300 mt-4'>
