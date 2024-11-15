@@ -8,7 +8,7 @@ export default function ShowListings() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentSlides, setCurrentSlides] = useState({});
-  const [sortBy, setSortBy] = useState('newest'); // Add sort state
+  const [sortBy, setSortBy] = useState('newest');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,7 +69,6 @@ export default function ShowListings() {
     }));
   };
 
-  // Add sorting function
   const getSortedListings = () => {
     const sortedListings = [...listings];
     switch (sortBy) {
@@ -209,7 +208,7 @@ export default function ShowListings() {
                       </svg>
                     </button>
                     <Link
-                      to={`/update-listing/${listing._id}`}
+                      to={`/update-listing/${listing._id}`} 
                       className="text-cyan-400 hover:text-cyan-300 transition-colors p-2"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -225,4 +224,4 @@ export default function ShowListings() {
       </div>
     </div>
   );
-} 
+}
