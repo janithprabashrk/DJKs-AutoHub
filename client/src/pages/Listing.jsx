@@ -63,6 +63,23 @@ export default function Listing() {
     fetchListing();
   }, [params.listingId]);
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: `${listing.modelName} - ${listing.YOM}`,
+          text: listing.description,
+          url: window.location.href
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (err) {
+      console.error('Error sharing:', err);
+    }
+  };
+
   if (loading || !imagesLoaded) {
     return (
       <div className='flex justify-center items-center min-h-screen bg-gray-900'>
@@ -82,6 +99,28 @@ export default function Listing() {
   return (
     <main className='bg-gradient-to-b from-gray-900 to-gray-800 min-h-screen py-8'>
       <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8'>
+        <div className='flex justify-between items-center'>
+          <button
+            onClick={() => navigate(-1)}
+            className='flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors'
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            Back
+          </button>
+          
+          <button
+            onClick={handleShare}
+            className='flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors'
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+            </svg>
+            Share
+          </button>
+        </div>
+
         {listing && listing.imageUrls && listing.imageUrls.length > 0 && (
           <div className="overflow-hidden rounded-xl shadow-2xl">
             <Swiper
