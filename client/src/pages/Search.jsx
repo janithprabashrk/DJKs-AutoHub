@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-//import ListingItem from '../components/ListingItem';
+import ListingItem from '../components/ListingItem';
 
 export default function Search() {
     const navigate = useNavigate();
@@ -61,15 +61,17 @@ export default function Search() {
             setShowMore(false);
             const searchQuery = urlParams.toString();
             try {
+                console.log('Fetching with query:', searchQuery);
                 const res = await fetch(`/api/listing/get?${searchQuery}`);
                 const data = await res.json();
+                console.log('Search results:', data);
                 if (data.length > 8) {
                     setShowMore(true);
                 }
                 setListings(data);
                 setLoading(false);
             } catch (error) {
-                console.log(error);
+                console.log('Search error:', error);
                 setLoading(false);
             }
         };
@@ -135,166 +137,215 @@ export default function Search() {
     };
 
     return (
-        <div className='flex flex-col md:flex-row'>
-            <div className='p-7 border-b-2 md:border-r-2 md:min-h-screen'>
-                <form onSubmit={handleSubmit} className='flex flex-col gap-8'>
-                    <div className='flex items-center gap-2'>
-                        <label className='whitespace-nowrap font-semibold'>Search Term:</label>
-                        <input
-                            type='text'
-                            id='searchTerm'
-                            placeholder='Search...'
-                            className='border rounded-lg p-3 w-full'
-                            value={sidebarData.searchTerm}
-                            onChange={handleChange}
-                        />
-                    </div>
+        <main className="min-h-screen bg-fixed bg-cover bg-center py-20" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1883&auto=format&fit=crop'), url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
+            <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-8">
+                <div className="md:w-1/3">
+                    <form onSubmit={handleSubmit} className="backdrop-blur-lg bg-white/10 p-8 rounded-2xl shadow-2xl">
+                        <div className="flex flex-col gap-6">
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-300 font-semibold">Search Term:</label>
+                                <input
+                                    type='text'
+                                    id='searchTerm'
+                                    placeholder='Search...'
+                                    className='w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                                    value={sidebarData.searchTerm}
+                                    onChange={handleChange}
+                                />
+                            </div>
 
-                    <div className='flex gap-2 flex-wrap items-center'>
-                        <label className='font-semibold'>Type:</label>
-                        <div className='flex gap-2'>
-                            <input
-                                type='checkbox'
-                                id='all'
-                                className='w-5'
-                                onChange={handleChange}
-                                checked={sidebarData.type === 'all'}
-                            />
-                            <span>All</span>
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-300 font-semibold">Type:</label>
+                                <div className="flex gap-4">
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                            type='checkbox'
+                                            id='all'
+                                            className="sr-only peer"
+                                            onChange={handleChange}
+                                            checked={sidebarData.type === 'all'}
+                                        />
+                                        <div className="w-11 h-6 bg-gray-700/50 border-2 border-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-300 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-cyan-500 peer-checked:to-blue-500 peer-checked:border-cyan-400 peer-hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] after:shadow-md peer-checked:after:shadow-cyan-200/50"></div>
+                                        <span className="ml-3 text-gray-200 select-none">All</span>
+                                    </label>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input
+                                            type='checkbox'
+                                            id='sale'
+                                            className="sr-only peer"
+                                            onChange={handleChange}
+                                            checked={sidebarData.type === 'sale'}
+                                        />
+                                        <div className="w-11 h-6 bg-gray-700/50 border-2 border-gray-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-300 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-cyan-500 peer-checked:to-blue-500 peer-checked:border-cyan-400 peer-hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] after:shadow-md peer-checked:after:shadow-cyan-200/50"></div>
+                                        <span className="ml-3 text-gray-200 select-none">For Sale</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-300 font-semibold">Price Range:</label>
+                                <div className="flex gap-4">
+                                    <div className="relative w-full">
+                                        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">LKR :</span>
+                                        <input
+                                            type='number'
+                                            id='minPrice'
+                                            className='w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                                            placeholder='Min Price'
+                                            value={sidebarData.minPrice}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="relative w-full">
+                                        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">LKR :</span>
+                                        <input
+                                            type='number'
+                                            id='maxPrice'
+                                            className='w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                                            placeholder='Max Price'
+                                            value={sidebarData.maxPrice}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-300 font-semibold">Mileage Range:</label>
+                                <div className="flex gap-4">
+                                    <div className="relative w-full">
+                                        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">km :</span>
+                                        <input
+                                            type='number'
+                                            id='minMileage'
+                                            className='w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                                            placeholder='Min Mileage'
+                                            value={sidebarData.minMileage}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                    <div className="relative w-full">
+                                        <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">km :</span>
+                                        <input
+                                            type='number'
+                                            id='maxMileage'
+                                            className='w-full bg-gray-800/50 border border-gray-700 rounded-xl p-4 pl-14 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                                            placeholder='Max Mileage'
+                                            value={sidebarData.maxMileage}
+                                            onChange={handleChange}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-300 font-semibold">Fuel Type:</label>
+                                <div className="relative">
+                                    <select
+                                        id='fuelType'
+                                        className='w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                                        onChange={handleChange}
+                                        value={sidebarData.fuelType}
+                                    >
+                                        <option value='all' className="bg-gray-800">All</option>
+                                        <option value='petrol' className="bg-gray-800">Petrol</option>
+                                        <option value='diesel' className="bg-gray-800">Diesel</option>
+                                        <option value='hybrid' className="bg-gray-800">Hybrid</option>
+                                        <option value='electric' className="bg-gray-800">Electric</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-300 font-semibold">Transmission:</label>
+                                <div className="relative">
+                                    <select
+                                        id='transmissionType'
+                                        className='w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                                        onChange={handleChange}
+                                        value={sidebarData.transmissionType}
+                                    >
+                                        <option value='all' className="bg-gray-800">All</option>
+                                        <option value='manual' className="bg-gray-800">Manual</option>
+                                        <option value='automatic' className="bg-gray-800">Automatic</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                                <label className="text-gray-300 font-semibold">Sort By:</label>
+                                <div className="relative">
+                                    <select
+                                        onChange={handleChange}
+                                        defaultValue={'created_desc'}
+                                        id='sort'
+                                        className='w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
+                                    >
+                                        <option value='price_desc' className="bg-gray-800">Price high to low</option>
+                                        <option value='price_asc' className="bg-gray-800">Price low to high</option>
+                                        <option value='created_desc' className="bg-gray-800">Latest</option>
+                                        <option value='created_asc' className="bg-gray-800">Oldest</option>
+                                        <option value='year_desc' className="bg-gray-800">Year new to old</option>
+                                        <option value='year_asc' className="bg-gray-800">Year old to new</option>
+                                    </select>
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
+                                        <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button className="py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-500 text-white font-semibold text-lg rounded-xl hover:shadow-[0_0_25px_rgba(6,182,212,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 relative overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:-translate-x-full hover:before:translate-x-full before:transition-transform before:duration-700">
+                                Search
+                            </button>
                         </div>
-                        <div className='flex gap-2'>
-                            <input
-                                type='checkbox'
-                                id='sale'
-                                className='w-5'
-                                onChange={handleChange}
-                                checked={sidebarData.type === 'sale'}
-                            />
-                            <span>For Sale</span>
+                    </form>
+                </div>
+
+                <div className="md:w-2/3">
+                    <div className="backdrop-blur-lg bg-white/10 p-8 rounded-2xl shadow-2xl">
+                        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-8">
+                            Listing Results
+                        </h1>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {!loading && listings.length === 0 && (
+                                <p className="text-xl text-gray-300">No listing found!</p>
+                            )}
+                            {loading && (
+                                <div className="col-span-2 flex justify-center">
+                                    <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+                                </div>
+                            )}
+
+                            {!loading &&
+                                listings &&
+                                listings.map((listing) => (
+                                    <ListingItem key={listing._id} listing={listing} />
+                                ))}
                         </div>
+
+                        {showMore && (
+                            <button
+                                onClick={onShowMoreClick}
+                                className="mt-8 w-full py-3 text-cyan-400 hover:text-cyan-300 border border-cyan-400 hover:border-cyan-300 rounded-xl transition duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+                            >
+                                Show more
+                            </button>
+                        )}
                     </div>
-
-                    <div className='flex gap-2 flex-wrap items-center'>
-                        <label className='font-semibold'>Price Range:</label>
-                        <input
-                            type='number'
-                            id='minPrice'
-                            className='border rounded-lg p-3'
-                            placeholder='Min Price'
-                            value={sidebarData.minPrice}
-                            onChange={handleChange}
-                        />
-                        <input
-                            type='number'
-                            id='maxPrice'
-                            className='border rounded-lg p-3'
-                            placeholder='Max Price'
-                            value={sidebarData.maxPrice}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className='flex gap-2 flex-wrap items-center'>
-                        <label className='font-semibold'>Mileage Range:</label>
-                        <input
-                            type='number'
-                            id='minMileage'
-                            className='border rounded-lg p-3'
-                            placeholder='Min Mileage'
-                            value={sidebarData.minMileage}
-                            onChange={handleChange}
-                        />
-                        <input
-                            type='number'
-                            id='maxMileage'
-                            className='border rounded-lg p-3'
-                            placeholder='Max Mileage'
-                            value={sidebarData.maxMileage}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <div className='flex gap-2 flex-wrap items-center'>
-                        <label className='font-semibold'>Fuel Type:</label>
-                        <select
-                            id='fuelType'
-                            className='border rounded-lg p-3'
-                            onChange={handleChange}
-                            value={sidebarData.fuelType}
-                        >
-                            <option value='all'>All</option>
-                            <option value='petrol'>Petrol</option>
-                            <option value='diesel'>Diesel</option>
-                            <option value='hybrid'>Hybrid</option>
-                            <option value='electric'>Electric</option>
-                        </select>
-                    </div>
-
-                    <div className='flex gap-2 flex-wrap items-center'>
-                        <label className='font-semibold'>Transmission:</label>
-                        <select
-                            id='transmissionType'
-                            className='border rounded-lg p-3'
-                            onChange={handleChange}
-                            value={sidebarData.transmissionType}
-                        >
-                            <option value='all'>All</option>
-                            <option value='manual'>Manual</option>
-                            <option value='automatic'>Automatic</option>
-                        </select>
-                    </div>
-
-                    <div className='flex items-center gap-2'>
-                        <label className='font-semibold'>Sort:</label>
-                        <select
-                            onChange={handleChange}
-                            defaultValue={'created_desc'}
-                            id='sort'
-                            className='border rounded-lg p-3'
-                        >
-                            <option value='price_desc'>Price high to low</option>
-                            <option value='price_asc'>Price low to high</option>
-                            <option value='created_desc'>Latest</option>
-                            <option value='created_asc'>Oldest</option>
-                            <option value='year_desc'>Year new to old</option>
-                            <option value='year_asc'>Year old to new</option>
-                        </select>
-                    </div>
-                    <button className='bg-blue-700 text-white p-3 rounded-lg uppercase hover:opacity-95'>
-                        Search
-                    </button>
-                </form>
-            </div>
-            <div className='flex-1'>
-                <h1 className='text-3xl font-semibold border-b p-3 text-slate-700 mt-5'>
-                    Listing results:
-                </h1>
-                <div className='p-7 flex flex-wrap gap-4'>
-                    {!loading && listings.length === 0 && (
-                        <p className='text-xl text-slate-700'>No listing found!</p>
-                    )}
-                    {loading && (
-                        <p className='text-xl text-slate-700 text-center w-full'>
-                            Loading...
-                        </p>
-                    )}
-
-                    {!loading &&
-                        listings &&
-                        listings.map((listing) => (
-                            <ListingItem key={listing._id} listing={listing} />
-                        ))}
-
-                    {showMore && (
-                        <button
-                            onClick={onShowMoreClick}
-                            className='text-green-700 hover:underline p-7 text-center w-full'
-                        >
-                            Show more
-                        </button>
-                    )}
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
