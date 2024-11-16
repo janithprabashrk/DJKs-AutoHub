@@ -12,6 +12,8 @@ export default function Listing() {
   const [contact, setContact] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showEmailPopup, setShowEmailPopup] = useState(false);
+  const [sellerInfo, setSellerInfo] = useState(null);
   const params = useParams();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
@@ -29,6 +31,11 @@ export default function Listing() {
         }
         setListing(data);
         
+        // Updated API endpoint
+        const sellerRes = await fetch(`/api/listing/user/${data.userRef}`);
+        const sellerData = await sellerRes.json();
+        setSellerInfo(sellerData);
+
         // Preload images
         if (data.imageUrls && data.imageUrls.length > 0) {
           const imagePromises = data.imageUrls.map(url => {
@@ -79,6 +86,41 @@ export default function Listing() {
     } catch (err) {
       console.error('Error sharing:', err);
     }
+  };
+
+  const handleEmailClick = () => {
+    if (!currentUser) {
+      alert('Please sign in to contact the seller');
+      return;
+    }
+    
+    if (!sellerInfo) {
+      alert('Unable to load seller information. Please try again later.');
+      return;
+    }
+    
+    if (!sellerInfo.email) {
+      alert('Seller email is not available');
+      return;
+    }
+    
+    const subject = encodeURIComponent(`Regarding your vehicle listing: ${listing.modelName} - ${listing.YOM}`);
+    const body = encodeURIComponent(`
+Hello,
+
+I am interested in your vehicle listing:
+${listing.modelName} - ${listing.YOM}
+Vehicle Number: ${listing.vehicleNumber}
+Price: Rs. ${listing.regularPrice}
+
+Please contact me back regarding this listing.
+
+Best regards,
+${currentUser.username}
+  `);
+    
+    const mailtoLink = `mailto:${sellerInfo.email}?subject=${subject}&body=${body}`;
+    window.location.href = mailtoLink;
   };
 
   if (loading || !imagesLoaded) {
@@ -250,7 +292,7 @@ export default function Listing() {
               </p>
               <p className='flex items-center gap-2'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-cyan-400">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864l-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077l1.41-.513m14.095-5.13l1.41-.513M5.106 17.785l1.15-.964m11.49-9.642l1.149-.964M7.501 19.795l.75-1.3m7.5-12.99l.75-1.3m-6.063 16.658l.26-1.477m2.605-14.772l.26-1.477m0 17.726l-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205L12 12m6.894 5.785l-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
                 </svg>
                 <span className='font-semibold text-cyan-400'>Transmission:</span> {listing.Transmission}
               </p>
@@ -284,22 +326,35 @@ export default function Listing() {
             )}
           </div>
 
-          {currentUser && listing.userRef !== currentUser._id && !contact && (
-            <button
-              onClick={() => setContact(true)}
-              className='bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-4 rounded-lg uppercase font-semibold hover:from-cyan-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-cyan-500/25'
-            >
-              Contact Owner
-            </button>
-          )}
-
-          {contact && (
-            <div className='text-cyan-400 bg-cyan-900/20 p-4 rounded-lg border border-cyan-800'>
-              <p className='font-semibold'>Contact: +94 {listing.contactNumber}</p>
+          {currentUser && currentUser._id !== listing.userRef && (
+            <div className='text-cyan-400 bg-cyan-900/20 p-6 rounded-lg border border-cyan-800 space-y-4'>
+              <h3 className='text-xl font-semibold border-b border-cyan-800 pb-3 flex items-center gap-2'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0011.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155" />
+                </svg>
+                Contact Information
+              </h3>
+              <div className='flex flex-col sm:flex-row sm:items-center gap-4'>
+                <p className='font-semibold flex items-center gap-2 bg-cyan-900/30 px-4 py-2 rounded-lg hover:bg-cyan-900/40 transition-colors group'>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                  </svg>
+                  +94 {listing.contactNumber}
+                </p>
+                <button 
+                  onClick={handleEmailClick}
+                  className='flex items-center gap-2 bg-cyan-900/30 px-4 py-2 rounded-lg hover:bg-cyan-900/40 transition-colors group'
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-12">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                  </svg>
+                  Email Seller
+                </button>
+              </div>
             </div>
           )}
 
-          {currentUser && listing.userRef === currentUser._id && (
+          {currentUser && currentUser._id === listing.userRef && (
             <button
               onClick={() => navigate(`/update-listing/${listing._id}`)}
               className='bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 rounded-lg uppercase font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-green-500/25'
