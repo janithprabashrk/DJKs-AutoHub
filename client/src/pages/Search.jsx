@@ -14,7 +14,7 @@ export default function Search() {
         minPrice: '',
         maxPrice: '',
         minMileage: '',
-        maxMileage: '',
+        maxMileage: '', 
         fuelType: 'all',
         transmissionType: 'all',
         sort: 'created_desc'
@@ -59,19 +59,36 @@ export default function Search() {
         const fetchListings = async () => {
             setLoading(true);
             setShowMore(false);
+            const urlParams = new URLSearchParams(location.search);
+            
+            // Remove empty parameters
+            for (const [key, value] of urlParams.entries()) {
+                if (!value || value === 'all') {
+                    urlParams.delete(key);
+                }
+            }
+            
             const searchQuery = urlParams.toString();
+            
             try {
-                console.log('Fetching with query:', searchQuery);
-                const res = await fetch(`/api/listing/get?${searchQuery}`);
+                const res = await fetch(`/api/listing/search?${searchQuery}`);
                 const data = await res.json();
-                console.log('Search results:', data);
+                
+                if (!Array.isArray(data)) {
+                    console.error('Invalid response format:', data);
+                    setListings([]);
+                    setLoading(false);
+                    return;
+                }
+
                 if (data.length > 8) {
                     setShowMore(true);
                 }
+                
                 setListings(data);
-                setLoading(false);
             } catch (error) {
-                console.log('Search error:', error);
+                console.error('Error fetching listings:', error);
+            } finally {
                 setLoading(false);
             }
         };
@@ -88,7 +105,10 @@ export default function Search() {
         }
         if (e.target.id === 'minPrice' || e.target.id === 'maxPrice' || 
             e.target.id === 'minMileage' || e.target.id === 'maxMileage') {
-            setSidebarData({ ...sidebarData, [e.target.id]: e.target.value });
+            const value = e.target.value;
+            if (value === '' || (Number(value) >= 0)) {
+                setSidebarData({ ...sidebarData, [e.target.id]: value });
+            }
         }
         if (e.target.id === 'sort') {
             setSidebarData({ ...sidebarData, sort: e.target.value });
@@ -104,15 +124,44 @@ export default function Search() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const urlParams = new URLSearchParams();
-        urlParams.set('searchTerm', sidebarData.searchTerm);
-        urlParams.set('type', sidebarData.type);
-        urlParams.set('minPrice', sidebarData.minPrice);
-        urlParams.set('maxPrice', sidebarData.maxPrice);
-        urlParams.set('minMileage', sidebarData.minMileage);
-        urlParams.set('maxMileage', sidebarData.maxMileage);
-        urlParams.set('fuelType', sidebarData.fuelType);
-        urlParams.set('transmissionType', sidebarData.transmissionType);
-        urlParams.set('sort', sidebarData.sort);
+
+        // Only add parameters if they have values
+        if (sidebarData.searchTerm) {
+            urlParams.set('searchTerm', sidebarData.searchTerm);
+        }
+        
+        if (sidebarData.type !== 'all') {
+            urlParams.set('type', sidebarData.type);
+        }
+        
+        // Handle price ranges
+        if (sidebarData.minPrice) {
+            urlParams.set('minPrice', sidebarData.minPrice);
+        }
+        if (sidebarData.maxPrice) {
+            urlParams.set('maxPrice', sidebarData.maxPrice);
+        }
+        
+        // Handle mileage ranges
+        if (sidebarData.minMileage) {
+            urlParams.set('minMileage', sidebarData.minMileage);
+        }
+        if (sidebarData.maxMileage) {
+            urlParams.set('maxMileage', sidebarData.maxMileage);
+        }
+        
+        if (sidebarData.fuelType !== 'all') {
+            urlParams.set('fuelType', sidebarData.fuelType);
+        }
+        
+        if (sidebarData.transmissionType !== 'all') {
+            urlParams.set('transmissionType', sidebarData.transmissionType);
+        }
+        
+        if (sidebarData.sort !== 'created_desc') {
+            urlParams.set('sort', sidebarData.sort);
+        }
+
         const searchQuery = urlParams.toString();
         navigate(`/search?${searchQuery}`);
     };
@@ -125,8 +174,12 @@ export default function Search() {
         const searchQuery = urlParams.toString();
         
         try {
-            const res = await fetch(`/api/listing/get?${searchQuery}`);
+            const res = await fetch(`/api/listing/search?${searchQuery}`);
             const data = await res.json();
+            if (data.success === false) {
+                console.log(data.message);
+                return;
+            }
             if (data.length < 9) {
                 setShowMore(false);
             }
@@ -194,6 +247,8 @@ export default function Search() {
                                             placeholder='Min Price'
                                             value={sidebarData.minPrice}
                                             onChange={handleChange}
+                                            min="0"
+                                            step="1000"
                                         />
                                     </div>
                                     <div className="relative w-full">
@@ -205,6 +260,8 @@ export default function Search() {
                                             placeholder='Max Price'
                                             value={sidebarData.maxPrice}
                                             onChange={handleChange}
+                                            min="0"
+                                            step="1000"
                                         />
                                     </div>
                                 </div>
@@ -287,7 +344,7 @@ export default function Search() {
                                 <div className="relative">
                                     <select
                                         onChange={handleChange}
-                                        defaultValue={'created_desc'}
+                                        value={sidebarData.sort}
                                         id='sort'
                                         className='w-full appearance-none bg-gray-800/50 border border-gray-700 rounded-xl p-4 text-gray-200 focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:outline-none transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]'
                                     >
@@ -329,7 +386,7 @@ export default function Search() {
                             )}
 
                             {!loading &&
-                                listings &&
+                                listings.length > 0 &&
                                 listings.map((listing) => (
                                     <ListingItem key={listing._id} listing={listing} />
                                 ))}
