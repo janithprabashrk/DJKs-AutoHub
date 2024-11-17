@@ -15,79 +15,80 @@ export default function Home() {
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
-        const res = await fetch('/api/listing/get?offer=true&limit=4');
+        const res = await fetch('/api/listing/search?discount=true&limit=5');
         const data = await res.json();
         setOfferListings(data);
-        fetchRentListings();
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const fetchRentListings = async () => {
-      try {
-        const res = await fetch('/api/listing/get?type=rent&limit=4');
-        const data = await res.json();
-        setRentListings(data);
-        fetchSaleListings();
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchSaleListings = async () => {
-      try {
-        const res = await fetch('/api/listing/get?type=sale&limit=4');
-        const data = await res.json();
-        setSaleListings(data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchOfferListings();
-  }, []);
+  },[]);
 
   return (
     <div>
       {/* Hero Section */}
-      <div className="min-h-[60vh] bg-fixed bg-cover bg-center" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1883&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
-        <div className='flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto'>
-          <h1 className='text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 font-bold text-3xl lg:text-6xl'>
-            Find your next <span className='text-cyan-400'>dream</span>
-            <br />
-            car with ease
-          </h1>
-          <div className='text-gray-300 text-xs sm:text-sm'>
-            AutoMarket is your premier destination for finding your perfect vehicle.
-            <br />
-            Browse our extensive collection of quality cars.
+        <div className="min-h-[100vh] bg-fixed bg-cover bg-center" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1883&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
+          <div className='flex flex-col gap-8 p-36 px-3 max-w-6xl mx-auto'>
+            <h1 className='text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 font-bold text-3xl lg:text-6xl'>
+          Find your next <span className='text-cyan-400'>dream</span>
+          <br />
+          car with ease
+            </h1>
+            <div className='text-gray-300 text-xs sm:text-sm'>
+          AutoMarket is your premier destination for finding your perfect vehicle.
+          <br />
+          Browse our extensive collection of quality cars.
+            </div>
+            <Link
+          to={'/search'}
+          className='text-xs sm:text-sm text-cyan-400 font-bold hover:underline'
+            >
+          Let&apos;s get started...
+            </Link>
           </div>
-          <Link
-            to={'/search'}
-            className='text-xs sm:text-sm text-cyan-400 font-bold hover:underline'
-          >
-            Let&apos;s get started...
-          </Link>
         </div>
-      </div>
 
-      {/* Swiper Section */}
-      <div className="bg-fixed bg-cover bg-center py-12" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
-        <Swiper navigation className="mb-12">
-          {offerListings &&
-            offerListings.length > 0 &&
-            offerListings.map((listing) => (
-              <SwiperSlide key={listing._id}>
-                <div
-                  style={{
-                    background: `url(${listing.imageUrls[0]}) center no-repeat`,
-                    backgroundSize: 'cover',
-                  }}
-                  className='h-[500px]'
-                ></div>
-              </SwiperSlide>
-            ))}
-        </Swiper>
-      </div>
+        {/* Swiper Section */}
+        <div className="min-h-[100vh] bg-fixed bg-cover bg-center py-12" 
+            style={{
+              backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop')`, 
+              backgroundAttachment: "fixed", 
+              backgroundBlendMode: "normal, overlay"
+            }}>
+            <div className="max-w-6xl mx-auto px-4"></div>
+              <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-6 text-center">
+            Featured Vehicles
+              </h2>
+              <Swiper 
+            navigation
+            className="mb-12 rounded-xl overflow-hidden shadow-2xl"
+            slidesPerView={1}
+            loop={true}
+            effect="fade"
+              >
+            {offerListings &&
+              offerListings.length > 0 &&
+              offerListings.map((listing) => (
+                <SwiperSlide key={listing._id}>
+              <div
+                style={{
+                  background: `url(${listing.imageUrls[0]}) center no-repeat`,
+                  backgroundSize: 'cover',
+                }}
+                className='h-[500px] relative group'
+              >
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                  <h3 className="text-2xl font-bold text-white mb-2">{listing.name}</h3>
+                  <p className="text-cyan-400 text-lg font-semibold">
+                ${listing.regularPrice.toLocaleString('en-US')}
+                  </p>
+                </div>
+              </div>
+                </SwiperSlide>
+              ))}
+              </Swiper>
+            </div>
 
       {/* Listing Results Section */}
       <div className="bg-fixed bg-cover bg-center py-10" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1494905998402-395d579af36f?q=80&w=2070&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
