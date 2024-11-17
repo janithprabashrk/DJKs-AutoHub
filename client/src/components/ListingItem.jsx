@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { MdLocationOn } from 'react-icons/md';
 import { useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import PropTypes from 'prop-types';
 
 export default function ListingItem({ listing }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -67,12 +68,12 @@ export default function ListingItem({ listing }) {
         </div>
         <div className='p-4'>
           <h2 className='text-xl font-semibold text-gray-200 hover:text-cyan-400 transition-colors mb-2'>
-            {listing.modelName}
+            {listing.Make} {listing.modelName}
           </h2>
           <div className='flex items-center gap-1 mb-2'>
             <MdLocationOn className='h-4 w-4 text-cyan-400' />
             <p className='text-gray-400 text-sm truncate'>
-              {listing.address}
+              {listing.location}
             </p>
           </div>
           <p className='text-gray-400 text-sm mb-4 line-clamp-2'>
@@ -81,13 +82,18 @@ export default function ListingItem({ listing }) {
           <div className='flex justify-between items-center'>
             <span className='text-cyan-400 font-semibold'>
               LKR {listing.regularPrice.toLocaleString()}
+              {listing.discountPrice && (
+                <span className="text-sm text-gray-400 line-through ml-2">
+                  LKR {listing.discountPrice.toLocaleString()}
+                </span>
+              )}
             </span>
             <div className='flex gap-2 text-gray-400'>
               <span className='text-sm'>
-                {listing.bedrooms} bed{listing.bedrooms > 1 ? 's' : ''} 
+                {listing.Transmission}
               </span>
               <span className='text-sm'>
-                {listing.bathrooms} bath{listing.bathrooms > 1 ? 's' : ''}
+                {listing.fuelType}
               </span>
             </div>
           </div>
@@ -96,3 +102,18 @@ export default function ListingItem({ listing }) {
     </div>
   );
 }
+
+ListingItem.propTypes = {
+  listing: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    imageUrls: PropTypes.arrayOf(PropTypes.string).isRequired,
+    Make: PropTypes.string.isRequired,
+    modelName: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    regularPrice: PropTypes.number.isRequired,
+    discountPrice: PropTypes.number,
+    Transmission: PropTypes.string.isRequired,
+    fuelType: PropTypes.string.isRequired
+  }).isRequired
+};
