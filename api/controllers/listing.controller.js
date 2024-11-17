@@ -60,34 +60,57 @@ export const getUser = async (req, res, next) => {
 
 export const getListings = async (req, res, next) => {
     try {
-        const limit = parseInt(req.query.limit) || 9;
+        const limit = parseInt(req.query.limit) || 10;
         const startIndex = parseInt(req.query.startIndex) || 0;
-        
-        // Build filter object based on query parameters
         let filters = {};
 
-        // Search term filter (searches model name)
+        // Enhanced search term functionality
         if (req.query.searchTerm) {
-            filters.modelName = { $regex: req.query.searchTerm, $options: 'i' };
+            const searchRegex = new RegExp(req.query.searchTerm, 'i');
+            filters.$or = [
+                { modelName: searchRegex },
+                { Make: searchRegex },
+                { description: searchRegex },
+                { location: searchRegex }
+            ];
         }
 
-        // Type filter (all vs sale)
-        if (req.query.type !== 'all') {
+        // Type filter
+        if (req.query.type && req.query.type !== 'all') {
             filters.type = req.query.type;
         }
 
-        // Price range filter
+        // Price range filter with validation
         if (req.query.minPrice || req.query.maxPrice) {
             filters.regularPrice = {};
-            if (req.query.minPrice) filters.regularPrice.$gte = parseInt(req.query.minPrice);
-            if (req.query.maxPrice) filters.regularPrice.$lte = parseInt(req.query.maxPrice);
+            const minPrice = parseInt(req.query.minPrice);
+            const maxPrice = parseInt(req.query.maxPrice);
+
+            if (req.query.minPrice && !isNaN(minPrice)) {
+                filters.regularPrice.$gte = minPrice;
+            }
+            if (req.query.maxPrice && !isNaN(maxPrice)) {
+                filters.regularPrice.$lte = maxPrice;
+            }
+
+            // Log for debugging
+            console.log('Price filters:', filters.regularPrice);
         }
 
-        // Mileage filter
+        // Mileage range filter with validation
         if (req.query.minMileage || req.query.maxMileage) {
             filters.mileage = {};
-            if (req.query.minMileage) filters.mileage.$gte = parseInt(req.query.minMileage);
-            if (req.query.maxMileage) filters.mileage.$lte = parseInt(req.query.maxMileage);
+            if (req.query.minMileage && !isNaN(req.query.minMileage)) {
+                filters.mileage.$gte = parseInt(req.query.minMileage);
+            }
+            if (req.query.maxMileage && !isNaN(req.query.maxMileage)) {
+                filters.mileage.$lte = parseInt(req.query.maxMileage);
+            }
+        }
+
+        // Transmission type filter
+        if (req.query.transmissionType && req.query.transmissionType !== 'all') {
+            filters.Transmission = req.query.transmissionType;
         }
 
         // Fuel type filter
@@ -95,17 +118,43 @@ export const getListings = async (req, res, next) => {
             filters.fuelType = req.query.fuelType;
         }
 
-        // Transmission type filter
-        if (req.query.transmissionType && req.query.transmissionType !== 'all') {
-            filters.transmissionType = req.query.transmissionType;
+        // Enhanced sort configuration
+        let sortOptions = {};
+        if (req.query.sort) {
+            switch(req.query.sort) {
+                case 'price_desc':
+                    sortOptions.regularPrice = -1;
+                    break;
+                case 'price_asc':
+                    sortOptions.regularPrice = 1;
+                    break;
+                case 'created_desc':
+                    sortOptions.createdAt = -1;
+                    break;
+                case 'created_asc':
+                    sortOptions.createdAt = 1;
+                    break;
+                case 'year_desc':
+                    sortOptions.year = -1;
+                    break;
+                case 'year_asc':
+                    sortOptions.year = 1;
+                    break;
+                default:
+                    sortOptions.createdAt = -1;
+            }
         }
 
-        // Get listings without sorting first
         const listings = await Listing.find(filters)
+            .sort(sortOptions)
             .limit(limit)
             .skip(startIndex);
 
+        // Get total count for pagination
+        const total = await Listing.countDocuments(filters);
+
         res.status(200).json(listings);
+
     } catch (error) {
         next(error);
     }
