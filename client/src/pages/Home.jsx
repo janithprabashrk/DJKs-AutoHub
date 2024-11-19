@@ -4,6 +4,10 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import SwiperCore from 'swiper';
 import 'swiper/css/bundle';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 import ListingItem from '../components/ListingItem';
 import { motion } from 'framer-motion';
 
@@ -168,12 +172,13 @@ export default function Home() {
           backgroundBlendMode: "normal, overlay"
         }}
       >
-        <div className="max-w-6xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-6 text-center">
             Featured Vehicles
           </h2>
           <Swiper
             navigation
+            pagination={{ clickable: true }}
             className="mb-12 rounded-xl overflow-hidden shadow-2xl"
             slidesPerView={1}
             loop={true}
@@ -188,14 +193,35 @@ export default function Home() {
                       background: `url(${listing.imageUrls[0]}) center no-repeat`,
                       backgroundSize: 'cover',
                     }}
-                    className="h-[500px] relative group"
+                    className="h-[500px] relative group rounded-lg border border-transparent hover:border-cyan-400 hover:scale-105 transition-all duration-300 ease-in-out overflow-hidden shadow-lg"
                   >
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
-                      <h3 className="text-2xl font-bold text-white mb-2">{listing.name}</h3>
-                      <p className="text-cyan-400 text-lg font-semibold">
-                        ${listing.regularPrice.toLocaleString('en-US')}
-                      </p>
-                    </div>
+                  <div className="absolute bottom-0 left-4 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100">
+                    <h3 className="text-2xl font-bold text-white mb-2">{listing.name}</h3>
+
+                    <motion.p
+                      className="text-cyan-400 text-lg font-semibold mb-4 hover:text-cyan-500"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ scale: 1.05, textShadow: "0px 0px 10px rgba(255, 255, 255, 0.5)" }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      ${listing.regularPrice.toLocaleString('en-US')}
+                    </motion.p>
+                    
+                    <motion.p
+                      className="text-cyan-400 text-lg font-semibold mb-4 hover:text-cyan-500"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ scale: 1.05, textShadow: "0px 0px 10px rgba(255, 255, 255, 0.5)" }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {listing.modelName}
+                    </motion.p>
+
+                    <button className="mt-4 px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-white rounded-full font-semibold shadow-lg hover:scale-110 hover:shadow-xl transform transition-all duration-300">
+                      View Details
+                    </button>
+                  </div>
                   </div>
                 </SwiperSlide>
               ))}
