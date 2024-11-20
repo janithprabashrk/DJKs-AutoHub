@@ -84,13 +84,13 @@ export default function Home() {
           <div
             key={index}
             className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
-              index === activeIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+              index === activeIndex ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-110 pointer-events-none'
             }`}
             style={{
               backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('${slide.backgroundImage}')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              backgroundBlendMode: 'overlay'
+              backgroundBlendMode: 'overlay',
             }}
           >
             <div className="flex flex-col gap-8 p-36 px-3 max-w-6xl mx-auto justify-center h-full">
@@ -114,12 +114,12 @@ export default function Home() {
                 }`}
               >
                 {slide.subtitle}
-                <br />
+                <br/>
                 Browse our extensive collection of quality cars.
               </div>
               <a
                 href="/search"
-                className={`text-xs sm:text-sm text-cyan-400 font-bold hover:underline transform transition-all duration-1000 ${
+                className={`animate-bounce text-xs sm:text-sm text-cyan-400 font-bold hover:underline transform transition-all duration-1000 ${
                   index === activeIndex ? 'translate-x-0 opacity-100 delay-700' : '-translate-x-20 opacity-0'
                 }`}
               >
