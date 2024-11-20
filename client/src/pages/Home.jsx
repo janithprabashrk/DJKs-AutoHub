@@ -10,6 +10,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import ListingItem from '../components/ListingItem';
 import { motion } from 'framer-motion';
+import { Sparkles, ArrowRight, Zap } from 'lucide-react';
 
 export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
@@ -66,16 +67,18 @@ export default function Home() {
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
-        const res = await fetch('/api/listing/search?discountPrice=true&limit=5');
+        const res = await fetch('/api/listing/search?discountPrice=0&limit=8&sort=-createdAt');
         const data = await res.json();
-        setOfferListings(data);
+        // Sort listings by creation date in descending order
+        const sortedListings = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setOfferListings(sortedListings);
       } catch (error) {
         console.error(error);
       }
     };
     fetchOfferListings();
   }, []);
-
+  
   return (
     <div>
       {/* Hero Section */}
@@ -109,7 +112,7 @@ export default function Home() {
                 ))}
               </h1>
               <div
-                className={`text-gray-300 text-xs sm:text-sm transform transition-all duration-1000 ${
+                className={`text-gray-300 text-xs sm:text-sm transform transition-all duration-1000  ${
                   index === activeIndex ? 'translate-x-0 opacity-100 delay-500' : '-translate-x-20 opacity-0'
                 }`}
               >
@@ -177,54 +180,78 @@ export default function Home() {
             Featured Vehicles
           </h2>
           <Swiper
-            navigation
-            pagination={{ clickable: true }}
-            className="mb-12 rounded-xl overflow-hidden shadow-2xl"
+            navigation={{
+              prevEl: '.custom-prev',
+              nextEl: '.custom-next',
+              disabledClass: 'opacity-30'
+            }}
+            pagination={{ 
+              clickable: true,
+              el: '.custom-pagination',
+              bulletClass: 'w-3 h-3 rounded-full bg-white/50 mx-1 transition-all duration-300 hover:bg-cyan-400 cursor-pointer',
+              bulletActiveClass: 'bg-cyan-400 scale-125'
+            }}
+            className="mb-12 rounded-xl overflow-hidden shadow-2xl relative group"
             slidesPerView={1}
             loop={true}
             effect="fade"
           >
-            {offerListings &&
-              offerListings.length > 0 &&
-              offerListings.map((listing) => (
-                <SwiperSlide key={listing._id}>
-                  <div
-                    style={{
-                      background: `url(${listing.imageUrls[0]}) center no-repeat`,
-                      backgroundSize: 'cover',
-                    }}
-                    className="h-[500px] relative group rounded-lg border border-transparent hover:border-cyan-400 hover:scale-105 transition-all duration-300 ease-in-out overflow-hidden shadow-lg"
-                  >
-                  <div className="absolute bottom-0 left-4 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100">
-                    <h3 className="text-2xl font-bold text-white mb-2">{listing.name}</h3>
-
-                    <motion.p
-                      className="text-cyan-400 text-lg font-semibold mb-4 hover:text-cyan-500"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      whileHover={{ scale: 1.05, textShadow: "0px 0px 10px rgba(255, 255, 255, 0.5)" }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      ${listing.regularPrice.toLocaleString('en-US')}
-                    </motion.p>
+            {offerListings && offerListings.length > 0 && offerListings.map((listing) => (
+              <SwiperSlide key={listing._id}>
+                <div
+                  style={{
+                    background: `url(${listing.imageUrls[0]}) center no-repeat`,
+                    backgroundSize: 'cover',
+                  }}
+                  className="h-[500px] relative group rounded-2xl border-2 border-transparent hover:border-cyan-400 hover:scale-105 transition-all duration-300 ease-in-out overflow-hidden shadow-2xl"
+                >
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-8 transition-opacity duration-500 ease-in-out opacity-0 group-hover:opacity-100 space-y-4">
+                    <h3 className="text-3xl font-bold text-white tracking-wider">{listing.name}</h3>
                     
-                    <motion.p
-                      className="text-cyan-400 text-lg font-semibold mb-4 hover:text-cyan-500"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      whileHover={{ scale: 1.05, textShadow: "0px 0px 10px rgba(255, 255, 255, 0.5)" }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {listing.modelName}
-                    </motion.p>
-
-                    <button className="mt-4 px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-white rounded-full font-semibold shadow-lg hover:scale-110 hover:shadow-xl transform transition-all duration-300">
-                      View Details
-                    </button>
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <p className="text-cyan-300 text-xl font-semibold">
+                            ${listing.regularPrice.toLocaleString('en-US')}
+                          </p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <p className="text-cyan-300 text-xl font-semibold">
+                            {listing.modelName}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div
+                        className="flex items-center space-x-2 bg-cyan-400/20 px-4 py-2 rounded-full cursor-pointer hover:bg-cyan-400/40 transition-all"
+                      >
+                        <span className="text-white font-semibold">View Details</span>
+                      </div>
+                    </div>
                   </div>
-                  </div>
-                </SwiperSlide>
-              ))}
+                </div>
+              </SwiperSlide>
+            ))}
+            
+            {/* Custom Navigation */}
+            <div className="absolute top-1/2 left-4 z-20 transform -translate-y-1/2 custom-prev cursor-pointer">
+              <div className="bg-white/20 hover:bg-cyan-400/40 rounded-full p-3 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white hover:text-white">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            
+            <div className="absolute top-1/2 right-4 z-20 transform -translate-y-1/2 custom-next cursor-pointer">
+              <div className="bg-white/20 hover:bg-cyan-400/40 rounded-full p-3 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white hover:text-white">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+            
+            {/* Custom Pagination */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2 custom-pagination"></div>
           </Swiper>
         </div>
       </div>
