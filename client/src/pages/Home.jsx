@@ -42,7 +42,7 @@ export default function Home() {
       textColor: 'from-cyan-400 to-blue-500'
     },
     {
-      backgroundImage: 'https://images.unsplash.com/photo-1552519507-da3b571bd537?q=80&w=1950&auto=format&fit=crop',
+      backgroundImage: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop',
       title: 'Luxury Meets Performance',
       subtitle: 'Explore our curated collection',
       textColor: 'from-purple-400 to-pink-500'
@@ -66,7 +66,7 @@ export default function Home() {
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
-        const res = await fetch('/api/listing/search?discount=true&limit=5');
+        const res = await fetch('/api/listing/search?discountPrice=true&limit=5');
         const data = await res.json();
         setOfferListings(data);
       } catch (error) {
