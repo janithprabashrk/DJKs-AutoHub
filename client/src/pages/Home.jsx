@@ -10,11 +10,11 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import ListingItem from '../components/ListingItem';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, Zap } from 'lucide-react';
+
 
 export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
-  const [saleListings, setSaleListings] = useState([]);
+  const [ModifyListings, setModifyListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -78,6 +78,23 @@ export default function Home() {
     };
     fetchOfferListings();
   }, []);
+
+  useEffect(() => {
+    const fetchModifyListings = async () => {
+      try {
+        const res = await fetch('/api/listing/search?modified=true&limit=5&sort=-createdAt');
+        const data = await res.json();
+        // Filter for modified items and sort by creation date in descending order
+        const modifiedListings = data.filter(item => item.modified === true);
+        const sortedListings = modifiedListings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setModifyListings(sortedListings);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchModifyListings();
+  }, []);
+  
   
   return (
     <div>
@@ -211,8 +228,8 @@ export default function Home() {
                     <div className="flex justify-between items-center">
                       <div className="space-y-2">
                         <div className="flex items-center space-x-2">
-                          <p className="text-cyan-300 text-xl font-semibold">
-                            ${listing.regularPrice.toLocaleString('en-US')}
+                          <p className="text-cyan-300 text-xl font-semibold animate-bounce">
+                            {listing.regularPrice.toLocaleString('en-US')} LKR
                           </p>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -223,9 +240,9 @@ export default function Home() {
                       </div>
                       
                       <div
-                        className="flex items-center space-x-2 bg-cyan-400/20 px-4 py-2 rounded-full cursor-pointer hover:bg-cyan-400/40 transition-all"
+                        className="flex items-center space-x-2 bg-cyan-400/20 px-4 py-2 rounded-full cursor-pointer hover:bg-cyan-400/40 transition-all animate-bounce"
                       >
-                        <span className="text-white font-semibold">View Details</span>
+                        <Link className="text-white font-semibold" to={`/listing/${listing._id}`}>View Details</Link>
                       </div>
                     </div>
                   </div>
@@ -321,13 +338,13 @@ export default function Home() {
           >
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                Cars for Rent
+                Modified Vehicles
               </h2>
               <Link
                 className="text-sm text-cyan-400 hover:underline flex items-center gap-1"
                 to={'/search?type=rent'}
               >
-                View all rentals
+                View all modified vehicles
                 <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -358,7 +375,7 @@ export default function Home() {
           </motion.div>
         )}
 
-        {saleListings && saleListings.length > 0 && (
+        {ModifyListings && ModifyListings.length > 0 && (
           <motion.div
             className="backdrop-blur-lg bg-white/10 p-6 rounded-2xl"
             initial="hidden"
@@ -367,13 +384,13 @@ export default function Home() {
           >
             <div className="my-3">
               <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
-                Cars for Sale
+                Modified Vehicles
               </h2>
               <Link
                 className="text-sm text-cyan-400 hover:underline flex items-center gap-1"
-                to={'/search?type=sale'}
+                to={'/search?modified=true'}
               >
-                View all sales
+                View all modified vehicles
                 <motion.svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -395,7 +412,7 @@ export default function Home() {
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
               variants={staggerContainer}
             >
-              {saleListings.map((listing) => (
+              {ModifyListings.map((listing) => (
                 <motion.div key={listing._id} variants={fadeInUp}>
                   <ListingItem listing={listing} />
                 </motion.div>
