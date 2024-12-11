@@ -100,14 +100,43 @@ export default function Home() {
     <div>
       {/* Hero Section */}
       <div className="relative min-h-screen overflow-hidden">
-        {slides.map((slide, index) => (
+        {[
+          {
+            backgroundImage: 'https://images.unsplash.com/photo-1632245889029-e406faaa34cd?q=80&w=1974',
+            title: 'Experience Pure Luxury',
+            subtitle: 'Discover the Lamborghini Lifestyle',
+            textColor: 'from-yellow-400 to-orange-500',
+            description: 'Feel the thrill of Italian engineering at its finest'
+          },
+          {
+            backgroundImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1974',
+            title: 'Group Travel Made Easy',
+            subtitle: 'Premium Bus Services',
+            textColor: 'from-blue-400 to-indigo-500',
+            description: 'Travel together in comfort and style'
+          },
+          {
+            backgroundImage: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1974',
+            title: 'Power Meets Purpose',
+            subtitle: 'Scania Trucks',
+            textColor: 'from-red-400 to-rose-500',
+            description: 'Built for the long haul, designed for success'
+          },
+          {
+            backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974',
+            title: 'Dominate Every Terrain',
+            subtitle: 'Modified Hummer',
+            textColor: 'from-green-400 to-emerald-500',
+            description: 'No road too tough, no challenge too great'
+          }
+        ].map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+            className={`absolute inset-0 transition-all duration-1500 ease-in-out ${
               index === activeIndex ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-110 pointer-events-none'
             }`}
             style={{
-              backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('${slide.backgroundImage}')`,
+              backgroundImage: `linear-gradient(to bottom right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('${slide.backgroundImage}')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundBlendMode: 'overlay',
@@ -115,27 +144,29 @@ export default function Home() {
           >
             <div className="flex flex-col gap-8 p-36 px-3 max-w-6xl mx-auto justify-center h-full">
               <h1
-                className={`text-transparent bg-clip-text bg-gradient-to-r ${slide.textColor} font-bold text-3xl lg:text-6xl transform transition-all duration-1000 ${
+                className={`text-transparent bg-clip-text bg-gradient-to-r ${slide.textColor} font-bold text-4xl lg:text-7xl transform transition-all duration-1000 ${
                   index === activeIndex ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
                 }`}
               >
                 {slide.title.split(' ').map((word, i) => (
                   <React.Fragment key={i}>
                     {i > 0 && <br />}
-                    <span className={`inline-block ${i === 1 ? 'text-cyan-400' : ''}`}>
+                    <span className="inline-block hover:scale-105 transition-transform">
                       {word}
                     </span>
                   </React.Fragment>
                 ))}
               </h1>
               <div
-                className={`text-gray-300 text-xs sm:text-sm transform transition-all duration-1000  ${
-                  index === activeIndex ? 'translate-x-0 opacity-100 delay-500' : '-translate-x-20 opacity-0'
+                className={`text-gray-200 text-sm sm:text-lg transform transition-all duration-1000 ${
+                  index === activeIndex ? 'translate-x-0 opacity-100 delay-300' : '-translate-x-20 opacity-0'
                 }`}
               >
-                {slide.subtitle}
+                <span className="font-semibold text-xl bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                  {slide.subtitle}
+                </span>
                 <br/>
-                Browse our extensive collection of quality cars.
+                <span className="italic text-gray-300">{slide.description}</span>
               </div>
               <a
                 href="/search"
@@ -153,7 +184,7 @@ export default function Home() {
         <div className="absolute z-10 top-1/2 transform -translate-y-1/2 w-full flex justify-between px-4">
           <button
             onClick={prevSlide}
-            className="bg-white/20 hover:bg-white/40 text-white p-2 rounded-full transition-all"
+            className="bg-black/30 hover:bg-cyan-500/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -161,7 +192,7 @@ export default function Home() {
           </button>
           <button
             onClick={nextSlide}
-            className="bg-white/20 hover:bg-white/40 text-white p-2 rounded-full transition-all"
+            className="bg-black/30 hover:bg-cyan-500/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
