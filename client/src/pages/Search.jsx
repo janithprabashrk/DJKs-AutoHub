@@ -192,7 +192,7 @@ export default function Search() {
     return (
         <main className="min-h-screen bg-fixed bg-cover bg-center py-20" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1883&auto=format&fit=crop'), url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
             <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row gap-8">
-                <div className="md:w-1/3">
+                <div className="md:w-1/4">
                     <form onSubmit={handleSubmit} className="backdrop-blur-lg bg-white/10 p-8 rounded-2xl shadow-2xl">
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col gap-2">
@@ -370,17 +370,17 @@ export default function Search() {
                     </form>
                 </div>
 
-                <div className="md:w-2/3">
+                <div className="md:w-3/4">
                     <div className="backdrop-blur-lg bg-white/10 p-8 rounded-2xl shadow-2xl">
                         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-8">
                             Listing Results
                         </h1>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {!loading && listings.length === 0 && (
                                 <p className="text-xl text-gray-300">No listing found!</p>
                             )}
                             {loading && (
-                                <div className="col-span-2 flex justify-center">
+                                <div className="col-span-3 flex justify-center">
                                     <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
                                 </div>
                             )}
