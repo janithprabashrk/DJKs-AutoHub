@@ -10,6 +10,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 import ListingItem from '../components/ListingItem';
 import { motion } from 'framer-motion';
+import Stats from '../components/Stats';
 
 
 export default function Home() {
@@ -35,29 +36,10 @@ export default function Home() {
 
   SwiperCore.use([Navigation]);
 
-  const slides = [
-    {
-      backgroundImage: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1883&auto=format&fit=crop',
-      title: 'Find your next dream car',
-      subtitle: 'AutoMarket is your premier destination',
-      textColor: 'from-cyan-400 to-blue-500'
-    },
-    {
-      backgroundImage: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070&auto=format&fit=crop',
-      title: 'Luxury Meets Performance',
-      subtitle: 'Explore our curated collection',
-      textColor: 'from-purple-400 to-pink-500'
-    },
-    {
-      backgroundImage: 'https://images.unsplash.com/photo-1605559424843-9e4868ac1aac?q=80&w=1974&auto=format&fit=crop',
-      title: 'Your Journey Starts Here',
-      subtitle: 'Discover the perfect ride',
-      textColor: 'from-green-400 to-blue-500'
-    }
-  ];
+
 
   const nextSlide = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    setActiveIndex((prevIndex) => (prevIndex + 1) % 4);
   };
 
   const prevSlide = () => {
@@ -99,7 +81,7 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative min-h-screen overflow-hidden mt-[70px]">
+      <div className="relative min-h-[115vh] overflow-hidden -mt-24">
         {[
           {
             backgroundImage: 'https://images.unsplash.com/photo-1632245889029-e406faaa34cd?q=80&w=1974',
@@ -123,7 +105,7 @@ export default function Home() {
             description: 'Reliable performance for your business needs'
           },
           {
-            backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974&auto=format&fit=crop',
+            backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974',
             title: 'Adventure Awaits',
             subtitle: 'Off-Road Specialists',
             textColor: 'from-green-400 to-emerald-500',
@@ -203,7 +185,7 @@ export default function Home() {
 
         {/* Slide Indicators */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
-          {slides.map((_, index) => (
+          {[0,1,2,3].map((index) => (
             <button
               key={index}
               onClick={() => setActiveIndex(index)}
@@ -216,6 +198,9 @@ export default function Home() {
           ))}
         </div>
       </div>
+      
+      {<Stats/>}
+
 
       {/* Swiper Section */}
       <div
