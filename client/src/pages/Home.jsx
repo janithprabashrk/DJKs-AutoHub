@@ -99,35 +99,35 @@ export default function Home() {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative min-h-screen overflow-hidden">
+      <div className="relative min-h-screen overflow-hidden mt-[70px]">
         {[
           {
             backgroundImage: 'https://images.unsplash.com/photo-1632245889029-e406faaa34cd?q=80&w=1974',
-            title: 'Experience Pure Luxury',
-            subtitle: 'Discover the Lamborghini Lifestyle',
+            title: 'Drive Your Dreams',
+            subtitle: 'Premium Luxury Cars',
             textColor: 'from-yellow-400 to-orange-500',
-            description: 'Feel the thrill of Italian engineering at its finest'
+            description: 'Experience unmatched performance and elegance'
           },
           {
             backgroundImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1974',
-            title: 'Group Travel Made Easy',
-            subtitle: 'Premium Bus Services',
+            title: 'Family First',
+            subtitle: 'Spacious SUVs & Vans',
             textColor: 'from-blue-400 to-indigo-500',
-            description: 'Travel together in comfort and style'
+            description: 'Perfect blend of comfort and versatility'
           },
           {
             backgroundImage: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1974',
-            title: 'Power Meets Purpose',
-            subtitle: 'Scania Trucks',
+            title: 'Built to Last',
+            subtitle: 'Commercial Vehicles',
             textColor: 'from-red-400 to-rose-500',
-            description: 'Built for the long haul, designed for success'
+            description: 'Reliable performance for your business needs'
           },
           {
-            backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974',
-            title: 'Dominate Every Terrain',
-            subtitle: 'Modified Hummer',
+            backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974&auto=format&fit=crop',
+            title: 'Adventure Awaits',
+            subtitle: 'Off-Road Specialists',
             textColor: 'from-green-400 to-emerald-500',
-            description: 'No road too tough, no challenge too great'
+            description: 'Conquer any path with confidence'
           }
         ].map((slide, index) => (
           <div
@@ -136,7 +136,7 @@ export default function Home() {
               index === activeIndex ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-110 pointer-events-none'
             }`}
             style={{
-              backgroundImage: `linear-gradient(to bottom right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('${slide.backgroundImage}')`,
+              backgroundImage: `linear-gradient(to bottom right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('${slide.backgroundImage}')`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundBlendMode: 'overlay',
@@ -144,7 +144,7 @@ export default function Home() {
           >
             <div className="flex flex-col gap-8 p-36 px-3 max-w-6xl mx-auto justify-center h-full">
               <h1
-                className={`text-transparent bg-clip-text bg-gradient-to-r ${slide.textColor} font-bold text-4xl lg:text-7xl transform transition-all duration-1000 ${
+                className={`text-transparent bg-clip-text bg-gradient-to-r ${slide.textColor} font-bold text-5xl lg:text-8xl transform transition-all duration-1000 ${
                   index === activeIndex ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
                 }`}
               >
@@ -158,11 +158,11 @@ export default function Home() {
                 ))}
               </h1>
               <div
-                className={`text-gray-200 text-sm sm:text-lg transform transition-all duration-1000 ${
+                className={`text-gray-200 text-lg sm:text-xl transform transition-all duration-1000 ${
                   index === activeIndex ? 'translate-x-0 opacity-100 delay-300' : '-translate-x-20 opacity-0'
                 }`}
               >
-                <span className="font-semibold text-xl bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                <span className="font-bold text-2xl bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                   {slide.subtitle}
                 </span>
                 <br/>
@@ -170,44 +170,47 @@ export default function Home() {
               </div>
               <a
                 href="/search"
-                className={`animate-bounce text-xs sm:text-sm text-cyan-400 font-bold hover:underline transform transition-all duration-1000 ${
+                className={`group flex items-center gap-2 w-fit text-sm sm:text-base text-cyan-400 font-bold hover:text-cyan-300 transform transition-all duration-1000 ${
                   index === activeIndex ? 'translate-x-0 opacity-100 delay-700' : '-translate-x-20 opacity-0'
                 }`}
               >
-                Let's get started...
+                Explore Our Collection
+                <span className="group-hover:translate-x-2 transition-transform">→</span>
               </a>
             </div>
           </div>
         ))}
 
         {/* Navigation Buttons */}
-        <div className="absolute z-10 top-1/2 transform -translate-y-1/2 w-full flex justify-between px-4">
+        <div className="absolute z-10 top-1/2 transform -translate-y-1/2 w-full flex justify-between px-8">
           <button
             onClick={prevSlide}
-            className="bg-black/30 hover:bg-cyan-500/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
+            className="group bg-black/20 hover:bg-cyan-500 text-white p-4 rounded-full transition-all duration-300 backdrop-blur-md hover:scale-110"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           <button
             onClick={nextSlide}
-            className="bg-black/30 hover:bg-cyan-500/50 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
+            className="group bg-black/20 hover:bg-cyan-500 text-white p-4 rounded-full transition-all duration-300 backdrop-blur-md hover:scale-110"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
 
         {/* Slide Indicators */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => setActiveIndex(index)}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === activeIndex ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/75'
+              className={`w-4 h-4 rounded-full transition-all duration-300 ${
+                index === activeIndex 
+                  ? 'bg-cyan-400 scale-125 ring-4 ring-cyan-400/30' 
+                  : 'bg-white/50 hover:bg-white hover:scale-110'
               }`}
             />
           ))}
