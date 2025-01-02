@@ -38,6 +38,11 @@ export const getListing = async (req, res, next) => {
     try {
         const listing = await Listing.findById(req.params.id);
         if (!listing) return next(createError(404, "Listing not found"));
+
+        // Increment the views counter
+        listing.views = (listing.views || 0) + 1;
+        await listing.save();
+
         res.status(200).json(listing);
     } catch (error) {
         next(error);
@@ -155,6 +160,65 @@ export const getListings = async (req, res, next) => {
 
         res.status(200).json(listings);
 
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getStats = async (req, res, next) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const totalListings = await Listing.countDocuments();
+        const totalModified = await Listing.countDocuments({ modified: true });
+        
+        // Calculate total views and clicks using aggregation
+        const stats = await Listing.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalViews: { $sum: { $ifNull: ['$views', 0] } },
+                    totalClicks: { $sum: { $ifNull: ['$adClicks', 0] } }
+                }
+            }
+        ]);
+
+        const { totalViews = 0, totalClicks = 0 } = stats[0] || {};
+
+        res.status(200).json({
+            totalUsers,
+            totalListings,
+            totalModified,
+            totalViews,
+            totalClicks
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const incrementListingView = async (req, res, next) => {
+    try {
+        const listing = await Listing.findById(req.params.id);
+        if (!listing) {
+            return next(createError(404, "Listing not found"));
+        }
+        listing.views = (listing.views || 0) + 1;
+        await listing.save();
+        res.status(200).json({ success: true });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const incrementAdClick = async (req, res, next) => {
+    try {
+        const listing = await Listing.findById(req.params.id);
+        if (!listing) {
+            return next(createError(404, "Listing not found"));
+        }
+        listing.adClicks = (listing.adClicks || 0) + 1;
+        await listing.save();
+        res.status(200).json({ success: true });
     } catch (error) {
         next(error);
     }
