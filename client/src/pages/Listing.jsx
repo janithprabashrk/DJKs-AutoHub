@@ -63,18 +63,6 @@ export default function Listing() {
         }
         
         setError(false);
-
-        // Track the view immediately after fetching listing
-        try {
-          await fetch(`/api/listing/view/${params.listingId}`, { 
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-        } catch (error) {
-          console.error('Error tracking view:', error);
-        }
       } catch (err) {
         setError(true);
         setLoading(false);
