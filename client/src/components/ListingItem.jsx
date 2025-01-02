@@ -27,9 +27,20 @@ export default function ListingItem({ listing }) {
     }
   };
 
+  const handleAdClick = async () => {
+    try {
+        await fetch(`/api/listing/click/${listing._id}`, { method: 'POST' });
+    } catch (error) {
+        console.error('Error tracking ad click:', error);
+    }
+  };
+
   return (
     <div className='bg-gray-800/50 rounded-xl overflow-hidden border border-gray-700 hover:shadow-[0_0_15px_rgba(6,182,212,0.3)] transition-all duration-300'>
-      <Link to={`/listing/${listing._id}`}>
+      <Link 
+        to={`/listing/${listing._id}`} 
+        onClick={handleAdClick}
+      >
         <div className="relative h-48">
           <img
             src={
