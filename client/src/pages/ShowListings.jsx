@@ -86,7 +86,7 @@ export default function ShowListings() {
   };
 
   return (
-    <div className="min-h-screen py-20 bg-fixed bg-cover bg-center" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)),url('https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=2037&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
+    <div className="min-h-screen py-28 bg-fixed bg-cover bg-center" style={{backgroundImage: `linear-gradient(to bottom right, rgba(17, 24, 39, 0.9), rgba(31, 41, 55, 0.9)),url('https://images.unsplash.com/photo-1525609004556-c46c7d6cf023?q=80&w=2037&auto=format&fit=crop')`, backgroundAttachment: "fixed", backgroundBlendMode: "normal, overlay"}}>
       <div className="max-w-6xl mx-auto px-4">
         <div className="max-w-4xl mx-auto px-4 flex items-center justify-between mb-12 relative z-10">
           <button 
