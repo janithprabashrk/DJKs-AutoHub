@@ -140,7 +140,7 @@ ${currentUser.username}
   }
 
   return (
-    <main className='bg-[url("https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=2071")] bg-cover bg-center bg-fixed bg-no-repeat bg-black/90 bg-blend-multiply min-h-screen py-8'>
+    <main className='bg-[url("https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=2071")] bg-cover bg-center bg-fixed bg-no-repeat bg-black/90 bg-blend-multiply min-h-screen py-28'>
       <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8'>
         <div className='flex justify-between items-center'>
           <button
