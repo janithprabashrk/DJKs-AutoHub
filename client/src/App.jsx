@@ -11,6 +11,7 @@ import ShowListings from './pages/ShowListings';
 import UpdateListing from './pages/UpdateListing';
 import Listing from './pages/Listing';
 import Search from './pages/Search';
+import ContactUs from './pages/ContactUs';
 export default function App() {
   return (
     <BrowserRouter>
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/search" element={<Search />} />
         <Route path="/listing/:listingId" element={<Listing />} />
         
