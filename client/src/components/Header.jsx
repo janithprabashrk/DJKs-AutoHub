@@ -59,6 +59,12 @@ export default function Header() {
                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
                         </li>
                     </Link>
+                    <Link to='/contact-us'>
+                        <li className='hidden sm:inline text-gray-300 hover:text-blue-400 hover:scale-110 transition duration-300 relative group'>
+                            Contact Us
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
+                        </li>
+                    </Link>
                     <Link to='/profile' className="ml-auto">
                     {currentUser ? (
                         <img className='rounded-full h-7 w-7 object-cover ring-2 ring-blue-400 hover:ring-4 hover:scale-110 transition duration-300' src={currentUser.avatar} alt="profile" />
