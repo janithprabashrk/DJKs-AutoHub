@@ -79,86 +79,94 @@ export default function Home() {
   return (
     <div className="overflow-x-hidden">
       {/* Hero Section */}
-      <div className="relative min-h-[115vh] overflow-hidden -mt-24">
-        {[
-          {
-            backgroundImage: 'https://images.unsplash.com/photo-1632245889029-e406faaa34cd?q=80&w=1974',
-            title: 'Drive Your Dreams',
-            subtitle: 'Premium Luxury Cars',
-            textColor: 'from-yellow-400 to-orange-500',
-            description: 'Experience unmatched performance and elegance'
-          },
-          {
-            backgroundImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1974',
-            title: 'Family First',
-            subtitle: 'Spacious SUVs & Vans',
-            textColor: 'from-blue-400 to-indigo-500',
-            description: 'Perfect blend of comfort and versatility'
-          },
-          {
-            backgroundImage: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1974',
-            title: 'Built to Last',
-            subtitle: 'Commercial Vehicles',
-            textColor: 'from-red-400 to-rose-500',
-            description: 'Reliable performance for your business needs'
-          },
-          {
-            backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974',
-            title: 'Adventure Awaits',
-            subtitle: 'Off-Road Specialists',
-            textColor: 'from-green-400 to-emerald-500',
-            description: 'Conquer any path with confidence'
-          }
-        ].map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 transition-all duration-1500 ease-in-out ${
-              index === activeIndex ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-110 pointer-events-none'
-            }`}
-            style={{
-              backgroundImage: `linear-gradient(to bottom right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('${slide.backgroundImage}')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundBlendMode: 'overlay',
-            }}
-          >
-            <div className="flex flex-col gap-8 p-36 px-3 max-w-6xl mx-auto justify-center h-full">
-              <h1
-                className={`text-transparent bg-clip-text bg-gradient-to-r ${slide.textColor} font-bold text-5xl lg:text-8xl transform transition-all duration-1000 ${
-                  index === activeIndex ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
-                }`}
-              >
-                {slide.title.split(' ').map((word, i) => (
-                  <React.Fragment key={i}>
-                    {i > 0 && <br />}
-                    <span className="inline-block hover:scale-105 transition-transform">
-                      {word}
-                    </span>
-                  </React.Fragment>
-                ))}
-              </h1>
-              <div
-                className={`text-gray-200 text-lg sm:text-xl transform transition-all duration-1000 ${
-                  index === activeIndex ? 'translate-x-0 opacity-100 delay-300' : '-translate-x-20 opacity-0'
-                }`}
-              >
-                <span className="font-bold text-2xl bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                  {slide.subtitle}
-                </span>
-                <br/>
-                <span className="italic text-gray-300">{slide.description}</span>
+      <div className="relative min-h-[115vh] overflow-hidden -mt-24 bg-gradient-to-r from-blue-900 via-black to-orange-900 ">
+          {[
+            {
+              backgroundImage: 'https://images.unsplash.com/photo-1632245889029-e406faaa34cd?q=80&w=1974',
+              title: 'Drive Your Dreams',
+              subtitle: 'Premium Luxury Cars',
+              textColor: 'from-yellow-400 to-orange-500',
+              description: 'Experience unmatched performance and elegance'
+            },
+            {
+              backgroundImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1974',
+              title: 'Family First',
+              subtitle: 'Spacious SUVs & Vans',
+              textColor: 'from-blue-400 to-indigo-500',
+              description: 'Perfect blend of comfort and versatility'
+            },
+            {
+              backgroundImage: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1974',
+              title: 'Built to Last',
+              subtitle: 'Commercial Vehicles',
+              textColor: 'from-red-400 to-rose-500',
+              description: 'Reliable performance for your business needs'
+            },
+            {
+              backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974',
+              title: 'Adventure Awaits',
+              subtitle: 'Off-Road Specialists',
+              textColor: 'from-green-400 to-emerald-500',
+              description: 'Conquer any path with confidence'
+            }
+          ].map((slide, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-all duration-1500 ease-in-out ${
+                index === activeIndex ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-110 pointer-events-none'
+              }`}
+              style={{
+                backgroundImage: `linear-gradient(to bottom right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('${slide.backgroundImage}')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundBlendMode: 'overlay',
+              }}
+            >
+              
+              <div className="flex flex-col gap-8 p-36 px-3 max-w-6xl mx-auto justify-center h-full">
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeInUp}
+                  className="max-w-3xl"
+                >
+                <h1
+                  className={`text-transparent bg-clip-text bg-gradient-to-r ${slide.textColor} font-bold text-5xl lg:text-8xl transform transition-all duration-1000 ${
+                    index === activeIndex ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'
+                  }`}
+                >
+                  {slide.title.split(' ').map((word, i) => (
+                    <React.Fragment key={i}>
+                      {i > 0 && <br />}
+                      <span className="inline-block hover:scale-105 transition-transform">
+                        {word}
+                      </span>
+                    </React.Fragment>
+                  ))}
+                </h1>
+                <div
+                  className={`text-gray-200 text-lg sm:text-xl transform transition-all duration-1000 ${
+                    index === activeIndex ? 'translate-x-0 opacity-100 delay-300' : '-translate-x-20 opacity-0'
+                  }`}
+                >
+                  <span className="font-bold text-2xl bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                    {slide.subtitle}
+                  </span>
+                  <br/>
+                  <span className="italic text-gray-300">{slide.description}</span>
+                </div>
+                <a
+                  href="/search"
+                  className={`group flex items-center gap-2 w-fit text-sm sm:text-base text-cyan-400 font-bold hover:text-cyan-300 transform transition-all duration-1000 ${
+                    index === activeIndex ? 'translate-x-0 opacity-100 delay-700' : '-translate-x-20 opacity-0'
+                  }`}
+                >
+                  Explore Our Collection
+                  <span className="group-hover:translate-x-2 transition-transform">→</span>
+                </a>
+                </motion.div>
               </div>
-              <a
-                href="/search"
-                className={`group flex items-center gap-2 w-fit text-sm sm:text-base text-cyan-400 font-bold hover:text-cyan-300 transform transition-all duration-1000 ${
-                  index === activeIndex ? 'translate-x-0 opacity-100 delay-700' : '-translate-x-20 opacity-0'
-                }`}
-              >
-                Explore Our Collection
-                <span className="group-hover:translate-x-2 transition-transform">→</span>
-              </a>
             </div>
-          </div>
         ))}
 
         {/* Navigation Buttons */}
