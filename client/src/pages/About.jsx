@@ -17,19 +17,19 @@ const AboutUs = () => {
 
   const teamMembers = [
     {
-      name: "David Johnson",
+      name: "R.K. Janith Prabash",
       role: "Founder & CEO",
       description: "Automotive industry veteran with 20+ years of experience"
     },
     {
-      name: "Katherine Smith",
+      name: "R.K. Janith Prabash",
       role: "Head of Operations",
       description: "Former luxury car brand executive"
     },
     {
-      name: "Michael Chen",
-      role: "Technical Director",
-      description: "Expert in automotive technology and innovation"
+      name: "R.K. Janith Prabash",
+      role: "Developer of DJK's AutoHUB",
+      description: "Full-stack developer with a passion for cars"
     }
   ];
 

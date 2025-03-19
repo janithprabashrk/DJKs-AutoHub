@@ -36,12 +36,45 @@ export default function Home() {
 
   SwiperCore.use([Navigation]);
 
+  const slides = [
+    {
+      backgroundImage: 'https://images.unsplash.com/photo-1632245889029-e406faaa34cd?q=80&w=1974',
+      title: 'Drive Your Dreams',
+      subtitle: 'Premium Luxury Cars',
+      textColor: 'from-yellow-400 to-orange-500',
+      description: 'Experience unmatched performance and elegance'
+    },
+    {
+      backgroundImage: 'https://images.unsplash.com/photo-1616455579100-2ceaa4eb2d37?q=80&w=2000',
+      title: 'Family First',
+      subtitle: 'Luxury SUVs',
+      textColor: 'from-blue-400 to-indigo-500',
+      description: 'Perfect blend of comfort and versatility'
+    },
+    {
+      backgroundImage: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1974',
+      title: 'Built to Last',
+      subtitle: 'Commercial Vehicles',
+      textColor: 'from-red-400 to-rose-500',
+      description: 'Reliable performance for your business needs'
+    },
+    {
+      backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974',
+      title: 'Adventure Awaits',
+      subtitle: 'Off-Road Specialists',
+      textColor: 'from-green-400 to-emerald-500',
+      description: 'Conquer any path with confidence'
+    },
+  ];
+
   const nextSlide = () => {
-    setActiveIndex((prevIndex) => (prevIndex + 1) % 4);
+    setActiveIndex((prevIndex) => (prevIndex + 1) % slides.length);
   };
 
   const prevSlide = () => {
-    setActiveIndex((prevIndex) => (prevIndex === 0 ? slides.length - 1 : prevIndex - 1));
+    setActiveIndex((prevIndex) =>
+      prevIndex === 0 ? slides.length - 1 : prevIndex - 1
+    );
   };
 
   useEffect(() => {
@@ -80,36 +113,7 @@ export default function Home() {
     <div className="overflow-x-hidden">
       {/* Hero Section */}
       <div className="relative min-h-[115vh] overflow-hidden -mt-24 bg-gradient-to-r from-blue-900 via-black to-orange-900 ">
-          {[
-            {
-              backgroundImage: 'https://images.unsplash.com/photo-1632245889029-e406faaa34cd?q=80&w=1974',
-              title: 'Drive Your Dreams',
-              subtitle: 'Premium Luxury Cars',
-              textColor: 'from-yellow-400 to-orange-500',
-              description: 'Experience unmatched performance and elegance'
-            },
-            {
-              backgroundImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=1974',
-              title: 'Family First',
-              subtitle: 'Spacious SUVs & Vans',
-              textColor: 'from-blue-400 to-indigo-500',
-              description: 'Perfect blend of comfort and versatility'
-            },
-            {
-              backgroundImage: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=1974',
-              title: 'Built to Last',
-              subtitle: 'Commercial Vehicles',
-              textColor: 'from-red-400 to-rose-500',
-              description: 'Reliable performance for your business needs'
-            },
-            {
-              backgroundImage: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?q=80&w=1974',
-              title: 'Adventure Awaits',
-              subtitle: 'Off-Road Specialists',
-              textColor: 'from-green-400 to-emerald-500',
-              description: 'Conquer any path with confidence'
-            }
-          ].map((slide, index) => (
+          {slides.map((slide, index) => (
             <div
               key={index}
               className={`absolute inset-0 transition-all duration-1500 ease-in-out ${
