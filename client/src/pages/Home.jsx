@@ -122,7 +122,13 @@ export default function Home() {
                 backgroundBlendMode: 'overlay',
               }}
             >
-              
+              <div
+                className="absolute inset-0 pointer-events-none bg-gradient-to-r from-black/40 via-black/10 to-transparent backdrop-blur-sm"
+                style={{
+                  WebkitMaskImage: 'linear-gradient(to right, black 30%, transparent)',
+                  maskImage: 'linear-gradient(to right, black 30%, transparent)',
+                }}
+              ></div>
               <div className="flex flex-col gap-8 p-36 px-3 max-w-6xl mx-auto justify-center h-full">
                 <motion.div
                   initial="hidden"
