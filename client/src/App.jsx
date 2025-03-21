@@ -12,6 +12,9 @@ import UpdateListing from './pages/UpdateListing';
 import Listing from './pages/Listing';
 import Search from './pages/Search';
 import ContactUs from './pages/ContactUs';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -24,6 +27,8 @@ export default function App() {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/search" element={<Search />} />
         <Route path="/listing/:listingId" element={<Listing />} />
+        <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+        <Route path='/terms' element={<Terms />} />
         
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
