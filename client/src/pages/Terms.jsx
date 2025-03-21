@@ -1,7 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 export default function Terms() {
+    const navigate = useNavigate();
     const fadeInUp = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
@@ -109,15 +110,16 @@ export default function Terms() {
                                 >
                                     Privacy Policy
                                 </Link>
-                                <Link 
-                                    to="/" 
+                                <button 
+                                    type="button"
+                                    onClick={() => navigate('/')}
                                     className="inline-flex items-center text-cyan-400 hover:text-cyan-300 transition-colors group"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                     </svg>
                                     Back to Home
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     </div>
