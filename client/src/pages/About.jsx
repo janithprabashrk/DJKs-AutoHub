@@ -183,23 +183,23 @@ const AboutUs = () => {
               </motion.div>
             </div>
             {/* Slider on right (hidden on mobile) */}
-            <div className="hidden md:block md:w-1/3">
-              <Slider {...sliderSettings}>
-                {carImages.map((image, index) => (
-                  <div key={index} className="outline-none">
-                    <img
-                      src={image}
-                      alt={`Futuristic Car ${index + 1}`}
-                      className="w-full h-64 object-cover rounded-lg"
-                    />
+                  <div className="hidden md:block md:w-1/3 mt-12 ml-6">
+                    <Slider {...sliderSettings}>
+                    {carImages.map((image, index) => (
+                      <div key={index} className="outline-none">
+                      <img
+                        src={image}
+                        alt={`Futuristic Car ${index + 1}`}
+                        className="w-full h-64 object-cover rounded-lg"
+                      />
+                      </div>
+                    ))}
+                    </Slider>
                   </div>
-                ))}
-              </Slider>
-            </div>
-          </div>
-        </motion.div>
+                  </div>
+                </motion.div>
 
-        {/* Stats Section */}
+                {/* Stats Section */}
         <div ref={statsRef} className="py-20 bg-gradient-to-b from-black/80 to-gray-900/80">
           <div className="container mx-auto px-6">
             <motion.div
@@ -283,28 +283,48 @@ const AboutUs = () => {
         </div>
 
         {/* Contact Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 0.8 }}
-          className="py-20 bg-gradient-to-b from-gray-900/80 to-black/80"
-        >
-          <div className="container mx-auto px-6 text-center">
-            <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-blue-400 via-purple-500 to-orange-400 bg-clip-text text-transparent">
-              Get In Touch
-            </h2>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-orange-500 rounded-lg font-semibold hover:opacity-90 transition-all duration-300"
-            >
-              Contact Us
-            </motion.button>
-          </div>
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: false, amount: 0.3 }}
+            transition={{ duration: 0.8 }}
+            className="py-20 bg-gradient-to-b from-gray-900/80 to-black/80"
+          >
+            <div className="container mx-auto px-6 text-center">
+              <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-blue-400 via-purple-500 to-orange-400 bg-clip-text text-transparent">
+                Get In Touch
+              </h2>
+              
+              <div className="relative inline-block group">
+                {/* Animated glow effect */}
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-orange-600 rounded-lg blur-xl opacity-70 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                
+                <motion.button
+            onClick={() => window.location.href = '/contact-us'}
+            whileHover={{ 
+              scale: 1.05,
+              textShadow: "0 0 8px rgb(255,255,255)",
+              boxShadow: "0 0 15px rgba(138, 75, 255, 0.5)"
+            }}
+            whileTap={{ 
+              scale: 0.95,
+              rotate: [-1, 1, -1, 0],
+              transition: { duration: 0.2 }
+            }}
+            className="relative px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-700 to-orange-600 rounded-lg font-semibold text-white border border-gray-800 shadow-[0_0_15px_rgba(138,75,255,0.5)] backdrop-blur-sm hover:border-gray-600 transition-all duration-300"
+                >
+            <span className="relative inline-flex items-center">
+              <span className="mr-2">Contact Us</span>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </span>
+                </motion.button>
+              </div>
+            </div>
+          </motion.div>
 
-        {/* Footer */}
+          {/* Footer */}
         <footer className="bg-black/90 py-12 border-t border-gray-800 relative overflow-hidden">
           {/* Futuristic background elements */}
           <div className="absolute inset-0 overflow-hidden">
