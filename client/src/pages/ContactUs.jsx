@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import emailjs from '@emailjs/browser';
 
 const ContactUs = () => {
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const formRef = useRef(null);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: '',
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ success: false, message: '' });
+  
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
+  };
+
+  const handleContactNow = (category) => {
+    setSelectedCategory(category);
+    // Scroll to the form section
+    formRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   const contactMethods = [
@@ -36,6 +54,60 @@ const ContactUs = () => {
       )
     }
   ];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ success: false, message: '' });
+
+    try {
+      // You need to sign up for EmailJS and replace these with your actual service ID, template ID, and user ID
+      const templateParams = {
+        to_email: 'janithprabash944@gmail.com',
+        from_name: `${formData.firstName} ${formData.lastName}`,
+        from_email: formData.email,
+        subject: selectedCategory || 'Contact Form Submission',
+        message: formData.message,
+      };
+
+      await emailjs.send(
+        'service_0g3ob4j', // Replace with your EmailJS service ID
+        'template_xb7ny7a', // Replace with your EmailJS template ID
+        templateParams,
+        'K4Z1e0793rmcfcy6F' // Replace with your EmailJS user ID
+      );
+
+      setSubmitStatus({
+        success: true,
+        message: 'Your message has been sent successfully!'
+      });
+      
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        message: '',
+      });
+      setSelectedCategory('');
+    } catch (error) {
+      console.error('Failed to send email:', error);
+      setSubmitStatus({
+        success: false,
+        message: 'Failed to send your message. Please try again later.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen overflow-hidden">
@@ -102,6 +174,7 @@ const ContactUs = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-300"
+                  onClick={() => handleContactNow(method.title)}
                 >
                   Contact Now
                 </motion.button>
@@ -126,6 +199,7 @@ const ContactUs = () => {
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
         }}
+        ref={formRef}
       >
         <div className="max-w-4xl mx-auto px-4">
           <motion.div
@@ -137,40 +211,72 @@ const ContactUs = () => {
             <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
               Send Us a Message
             </h2>
-            <form className="space-y-6">
+            
+            {submitStatus.message && (
+              <div className={`mb-6 p-4 rounded-lg ${submitStatus.success ? 'bg-green-500/20 text-green-200' : 'bg-red-500/20 text-red-200'}`}>
+                {submitStatus.message}
+              </div>
+            )}
+            
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <motion.input
                   whileFocus={{ scale: 1.02 }}
                   type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
                   placeholder="First Name"
+                  required
                   className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
                 />
                 <motion.input
                   whileFocus={{ scale: 1.02 }}
                   type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
                   placeholder="Last Name"
+                  required
                   className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
                 />
               </div>
               <motion.input
                 whileFocus={{ scale: 1.02 }}
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
                 placeholder="Email Address"
+                required
                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
+              />
+              <motion.input
+                whileFocus={{ scale: 1.02 }}
+                type="text"
+                placeholder="About"
+                value={selectedCategory}
+                readOnly
+                className={`w-full px-4 py-3 rounded-lg bg-gray-800/50 border ${selectedCategory ? 'border-cyan-500' : 'border-gray-700'} text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200`}
               />
               <motion.textarea
                 whileFocus={{ scale: 1.02 }}
                 rows="6"
+                name="message"
+                value={formData.message}
+                onChange={handleInputChange}
                 placeholder="Your Message"
+                required
                 className="w-full px-4 py-3 rounded-lg bg-gray-800/50 border border-gray-700 text-white placeholder-gray-400 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200 resize-none"
               />
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="submit"
-                className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-300"
+                disabled={isSubmitting}
+                className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all duration-300 disabled:opacity-70"
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </motion.button>
             </form>
           </motion.div>
