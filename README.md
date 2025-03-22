@@ -180,9 +180,9 @@ Project Creator: [DJK Gaming Studio](https://www.youtube.com/@DJKGamingStudio)
 Project Link: [https://github.com/janithprabashrk/djks-autohub](https://github.com/janithprabashrk
 /djks-autohub)
 
-GitHub: [Janith Prabashwara](https://github.com/janithprabashrk)
+GitHub: [Janith Prabash R.K.](https://github.com/janithprabashrk)
 
-LinkedIn: [Janith Prabashwara](https://www.linkedin.com/in/janithrk/)
+LinkedIn: [Janith Prabash R.K.](https://www.linkedin.com/in/janithrk/)
 
 ---
 
