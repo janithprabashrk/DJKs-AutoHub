@@ -1,6 +1,5 @@
-# DJK's AutoHub - Luxury Automotive Marketplace
+## DJK's AutoHub - Luxury Automotive Marketplace
 
-![DJK's AutoHub Banner](https://i.imgur.com/placeholder.jpg)
 
 ## 🚗 About The Project
 
