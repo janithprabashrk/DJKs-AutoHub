@@ -175,7 +175,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📞 Contact
 
-Project Creator: [DJK Gaming Studio](https://www.youtube.com/@DJKGamingStudio)
+Project Creator: [Janith Prabash R.K.](https://www.youtube.com/@DJKGamingStudio)
 
 Project Link: [https://github.com/janithprabashrk/djks-autohub](https://github.com/janithprabashrk
 /djks-autohub)
